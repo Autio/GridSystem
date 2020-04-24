@@ -343,7 +343,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1ff3ed71b975f33479c4dc0d169a266d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  circleCursor: {fileID: 1475572461}
+  circleCursorPrefab: {fileID: 5065982069326089073, guid: 783e6f78983dae645adda8d5a11796db,
+    type: 3}
 --- !u!1 &705507993
 GameObject:
   m_ObjectHideFlags: 0
@@ -601,9 +602,3 @@ Transform:
   m_Father: {fileID: 963194228}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &1475572461 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 5065982069326089073, guid: 783e6f78983dae645adda8d5a11796db,
-    type: 3}
-  m_PrefabInstance: {fileID: 373305620}
-  m_PrefabAsset: {fileID: 0}

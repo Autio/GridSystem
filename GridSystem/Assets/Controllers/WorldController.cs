@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -23,24 +24,30 @@ public class WorldController : MonoBehaviour
 
                 tile_go.name = "Tile_" + x + "_ " + y;
                 tile_go.transform.position = new Vector3(tile_data.X, tile_data.Y, 0);
+                tile_go.transform.SetParent(this.transform, true);
+
 
                 // Add a sprite renderer
                 SpriteRenderer tile_sr = tile_go.AddComponent<SpriteRenderer>();
 
+                tile_data.RegisterTileTypeChangedCallback( (tile) => { OnTileTypeChanged(tile, tile_go); } );
 
             }
         }
         world.RandomizeTiles();
-
-
-
-
     }
+
+    float randomizeTileTimer = 2f;
 
     // Update is called once per frame
     void Update()
     {
-        
+        randomizeTileTimer -= Time.deltaTime;
+        if(randomizeTileTimer <0 )
+        {
+            randomizeTileTimer = 2f;
+            world.RandomizeTiles();
+        }
     }
 
     void OnTileTypeChanged(Tile tile_data, GameObject tile_go)

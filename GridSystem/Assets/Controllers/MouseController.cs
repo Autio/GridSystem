@@ -15,6 +15,7 @@ public class MouseController : MonoBehaviour
     void Start()
     {
         dragPreviewGameObjects = new List<GameObject>();
+        SimplePool.Preload(circleCursorPrefab, 100);
     }
 
     // Update is called once per frame
@@ -80,14 +81,11 @@ public class MouseController : MonoBehaviour
         {
             GameObject go = dragPreviewGameObjects[0];
             dragPreviewGameObjects.RemoveAt(0);
-            Destroy(go);
+            SimplePool.Despawn(go);
         }
         if (Input.GetMouseButton(0))
         {
             // Display a preview of the drag area
-
-          
-
             for (int x = start_x; x <= end_x; x++)
             {
                 for (int y = start_y; y <= end_y; y++)
@@ -95,17 +93,19 @@ public class MouseController : MonoBehaviour
                     Tile t = WorldController.Instance.World.GetTileAt(x, y);
                     if (t != null)
                     {
-                        GameObject go = (GameObject)Instantiate(circleCursorPrefab, new Vector3(x, y, 0), Quaternion.identity);
+                        GameObject go = SimplePool.Spawn(circleCursorPrefab, new Vector3(x, y, 0), Quaternion.identity);
+                        go.transform.SetParent(this.transform, true);
                         dragPreviewGameObjects.Add(go);
                     }
 
                 }
             }
+        }
 
-
-            // End drag
-            if (Input.GetMouseButtonUp(0))
+        // End drag
+        if (Input.GetMouseButtonUp(0))
             {
+                Debug.Log("Creating floor");
 
 
                 for (int x = start_x; x <= end_x; x++)
@@ -120,8 +120,8 @@ public class MouseController : MonoBehaviour
                     }
 
                 }
-            }
-        }
+         }
+       
     }
 
     void UpdateCameraMovement()
@@ -131,10 +131,13 @@ public class MouseController : MonoBehaviour
         if (Input.GetMouseButton(1) || Input.GetMouseButton(2))
         {
             Vector3 diff = lastFramePosition - currFramePosition;
-            Debug.Log(diff);
             Camera.main.transform.Translate(diff);
+
+
         }
 
+        Camera.main.orthographicSize -= Camera.main.orthographicSize * Input.GetAxis("Mouse ScrollWheel");
+        Camera.main.orthographicSize = Mathf.Clamp(Camera.main.orthographicSize, 3f, 30f);
         lastFramePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
         lastFramePosition.z = 0;
     }

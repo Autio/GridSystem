@@ -1,13 +1,19 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System;
 
 public class World
 {
     Tile[,] tiles;
+
+    Dictionary<string, InstalledObject> installedObjectPrototypes;
+
     int width, height;
     public int Width { get => width; }
     public int Height { get => height; }
+
+    Action<InstalledObject> cbInstalledObjectCreated;
 
     public World(int width = 100, int height = 100)
     {
@@ -25,9 +31,33 @@ public class World
         }
 
         Debug.Log("World created with " + (width * height) + " tiles");
+
+
+        CreateInstalledObjectPrototypes();
+        // TODO: Implement larger objects
+        // TODO: Implement object rotation
     }
 
+    void CreateInstalledObjectPrototypes()
+    {
+        installedObjectPrototypes = new Dictionary<string, InstalledObject>();
 
+        installedObjectPrototypes.Add("Wall",
+            InstalledObject.CreatePrototype(
+            "Wall",
+            0,      // Impassable
+            1,
+            1
+            )
+        );
+
+
+    }
+
+    InstalledObject CreateOneInstalledObjectPrototype()
+    {
+        return null;
+    }
 
     public Tile GetTileAt(int x, int y)
     {
@@ -43,6 +73,41 @@ public class World
         }
 
         return tiles[x, y];
+    }
+
+    public void PlaceInstalledObject(string objectType, Tile t)
+    {
+        // FIXME: Assumes 1x1 tiles, change later
+        if (installedObjectPrototypes.ContainsKey(objectType) == false)
+            {
+            Debug.LogError("installedObjectPrototypes doesn't contain a proto for the key: " + objectType);
+
+        }
+
+        InstalledObject obj = InstalledObject.PlaceInstance(installedObjectPrototypes[objectType], t);
+        if(obj == null)
+        {
+            // Failed to place object. Probably something there already
+            return;
+        }
+
+        if(cbInstalledObjectCreated != null)
+        {
+            cbInstalledObjectCreated(obj);
+        }
+
+
+    }
+
+    public void RegisterInstalledObjectCreated(Action<InstalledObject> callbackfunc)
+    {
+        cbInstalledObjectCreated += callbackfunc;
+    }
+
+
+    public void UnregisterInstalledObjectCreated(Action<InstalledObject> callbackfunc)
+    {
+        cbInstalledObjectCreated -= callbackfunc;
     }
 
     // Initialize when being looked at
@@ -61,13 +126,13 @@ public class World
         {
             for (int y = 0; y < height; y++)
             {
-                if(Random.Range(0,2) == 0)
+                if (UnityEngine.Random.Range(0, 2) == 0)
                 {
-                    tiles[x, y].Type = Tile.TileType.Empty;
+                    tiles[x, y].Type = TileType.Empty;
                 }
                 else
                 {
-                    tiles[x, y].Type = Tile.TileType.Floor;
+                    tiles[x, y].Type = TileType.Floor;
                 }
             }
         }

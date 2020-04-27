@@ -2,7 +2,7 @@
 using UnityEditor;
 
 [CustomEditor(typeof(AutomaticVerticalSize))]
-public class NewBehaviourScript : Editor
+public class AutomaticVerticalSizeEditor : Editor
 {
     public override void OnInspectorGUI()
     {

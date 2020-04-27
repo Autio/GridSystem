@@ -3,10 +3,10 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Tile { 
+// Should there be a type? 
+public enum TileType { Empty, Floor, Space, Scaffolding, Metal, Wood };
 
-    // Should there be a type? 
-    public enum TileType { Empty, Floor, Space, Scaffolding, Metal, Wood };
+public class Tile { 
 
     TileType _type = TileType.Empty;
 
@@ -51,5 +51,25 @@ public class Tile {
     public void UnregisterTileTypeChangedCallback(Action<Tile> callback)
     {
         cbTileTypeChanged -= callback;
+    }
+
+    public bool PlaceObject(InstalledObject objInstance)
+    {
+        if (objInstance == null)
+        {
+            // Uninstalling whatever was here before
+            installedObject = null;
+            return true;
+        }
+
+        if(installedObject != null)
+        {
+            Debug.LogError("Trying to assign an installed object to a tile that already has one");
+            return false;
+        }
+
+        // Installing object
+        installedObject = objInstance;
+        return true;
     }
 }

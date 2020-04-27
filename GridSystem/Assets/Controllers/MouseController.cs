@@ -1,10 +1,14 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
+
 
 public class MouseController : MonoBehaviour
 {
-    public GameObject circleCursorPrefab; 
+    public GameObject circleCursorPrefab;
+
+    Tile.TileType buildModeTile = Tile.TileType.Floor;
 
     Vector3 lastFramePosition;
     Vector3 dragStartPosition;
@@ -49,6 +53,7 @@ public class MouseController : MonoBehaviour
 
     void UpdateDragging()
     {
+ 
         // Handle left mouse clicks
         // Start Drag 
 
@@ -115,7 +120,7 @@ public class MouseController : MonoBehaviour
                         Tile t = WorldController.Instance.World.GetTileAt(x, y);
                         if (t != null)
                         {
-                            t.Type = Tile.TileType.Floor;
+                            t.Type = buildModeTile;
                         }
                     }
 
@@ -142,5 +147,14 @@ public class MouseController : MonoBehaviour
         lastFramePosition.z = 0;
     }
 
-    
+    public void SetMode_BuildFloor()
+    {
+        buildModeTile = Tile.TileType.Floor;
+
+    }
+    public void SetMode_Bulldoze()
+    {
+        buildModeTile = Tile.TileType.Empty;
+
+    }
 }

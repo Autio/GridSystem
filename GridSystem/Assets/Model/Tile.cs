@@ -10,7 +10,7 @@ public class Tile {
 
     TileType _type = TileType.Empty;
 
-    Action<Tile> cbTileTypeChanged;
+    Action<Tile> cbTileChanged;
 
     UninstalledObject uninstalledObject;
 
@@ -33,8 +33,8 @@ public class Tile {
 
             // Call the callback to make it clear things have changed
 
-            if (cbTileTypeChanged != null && oldType != _type)
-                cbTileTypeChanged(this);
+            if (cbTileChanged != null && oldType != _type)
+                cbTileChanged(this);
         }
     }
     public int X { get => x; }
@@ -49,12 +49,12 @@ public class Tile {
 
     public void RegisterTileTypeChangedCallback(Action<Tile> callback)
     {
-        cbTileTypeChanged += callback;
+        cbTileChanged += callback;
     }
 
     public void UnregisterTileTypeChangedCallback(Action<Tile> callback)
     {
-        cbTileTypeChanged -= callback;
+        cbTileChanged -= callback;
     }
 
     public bool PlaceObject(Furniture objInstance)

@@ -14,6 +14,7 @@ public class World
     public int Height { get => height; }
 
     Action<Furniture> cbFurnitureCreated;
+    Action<Tile> cbTileChanged;
 
     public World(int width = 100, int height = 100)
     {
@@ -27,6 +28,7 @@ public class World
             for (int y = 0; y < height; y++)
             {
                 tiles[x, y] = new Tile(this, x, y);
+                tiles[x, y].RegisterTileTypeChangedCallback( OnTileChanged );
             }
         }
 
@@ -109,6 +111,26 @@ public class World
     public void UnregisterFurnitureCreated(Action<Furniture> callbackfunc)
     {
         cbFurnitureCreated -= callbackfunc;
+    }
+
+    public void RegisterTileChanged(Action<Tile> callbackfunc)
+    {
+        cbTileChanged += callbackfunc;
+    }
+
+
+    public void UnregisterTileChanged(Action<Tile> callbackfunc)
+    {
+        cbTileChanged -= callbackfunc;
+    }
+
+    void OnTileChanged(Tile t)
+    {
+        if(cbTileChanged == null)
+        {
+            return;
+        }
+        cbTileChanged(t);
     }
 
     // Initialize when being looked at

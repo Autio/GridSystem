@@ -113,8 +113,6 @@ public class MouseController : MonoBehaviour
         // End drag
         if (Input.GetMouseButtonUp(0))
             {
-                Debug.Log("Creating floor");
-
 
                 for (int x = start_x; x <= end_x; x++)
                 {

@@ -20,7 +20,7 @@ public class WorldController : MonoBehaviour
     public Sprite emptySprite;
 
     // Start is called before the first frame update
-    void Start()
+    void OnEnable()
     {
         LoadSprites();
 
@@ -60,11 +60,13 @@ public class WorldController : MonoBehaviour
                 SpriteRenderer tile_sr = tile_go.AddComponent<SpriteRenderer>();
                 tile_go.GetComponent<SpriteRenderer>().sprite = emptySprite;
 
-                // Add callback to check for tile type changes
-                tile_data.RegisterTileTypeChangedCallback(OnTileTypeChanged);
-
             }
         }
+
+
+        // Add callback to check for tile type changes
+        World.RegisterTileChanged(OnTileChanged);
+
 
         // Center the camera
         Camera.main.transform.position = new Vector3(World.Width / 2, World.Height / 2, Camera.main.transform.position.z);
@@ -110,14 +112,14 @@ public class WorldController : MonoBehaviour
             tileGameObjectMap.Remove(tile_data);
 
             // Unregister the callback
-            tile_data.UnregisterTileTypeChangedCallback(OnTileTypeChanged);
+            tile_data.UnregisterTileTypeChangedCallback(OnTileChanged);
 
             // Destroy the visual GameObject
             Destroy(tile_go); //Use SimplePool?
         }
     }
 
-    void OnTileTypeChanged(Tile tile_data)
+    void OnTileChanged(Tile tile_data)
     {
         if(tileGameObjectMap.ContainsKey(tile_data) == false)
         {
@@ -143,7 +145,7 @@ public class WorldController : MonoBehaviour
         }
         else
         {
-            Debug.LogError("OnTileTypeChanged - Unrecognized tile type");
+            Debug.LogError("OnTileChanged - Unrecognized tile type");
         }
     }
 

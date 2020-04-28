@@ -47,7 +47,8 @@ public class World
             "Wall",
             0,      // Impassable
             1,
-            1
+            1,
+            true    // links to neighbour
             )
         );
 

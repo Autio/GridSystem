@@ -23,6 +23,11 @@ public class InstalledObject
     int width;
     int height;
 
+    public bool linksToNeighbour
+    {
+        get; protected set;
+    }
+
     Action<InstalledObject> cbOnChanged;
 
     protected InstalledObject()
@@ -31,13 +36,14 @@ public class InstalledObject
     }
 
     // Used by our object factory to create the prototypical object
-    static public InstalledObject CreatePrototype(string objectType, float movementCost = 1f, int width = 1, int height = 1 )
+    static public InstalledObject CreatePrototype(string objectType, float movementCost = 1f, int width = 1, int height = 1, bool linksToNeighbour = false )
     {
         InstalledObject obj = new InstalledObject();
         obj.objectType = objectType;
         obj.movementCost = movementCost;
         obj.width = width;
         obj.height = height;
+        obj.linksToNeighbour = linksToNeighbour;
 
         return obj;
     }
@@ -50,6 +56,7 @@ public class InstalledObject
         obj.movementCost = proto.movementCost;
         obj.width = proto.width;
         obj.height = proto.height;
+        obj.linksToNeighbour = proto.linksToNeighbour;
 
         obj.tile = tile;
 

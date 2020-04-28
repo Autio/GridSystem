@@ -13,7 +13,11 @@ public class Tile {
     Action<Tile> cbTileTypeChanged;
 
     UninstalledObject uninstalledObject;
-    InstalledObject installedObject;
+
+    public InstalledObject installedObject
+    {
+        get; protected set;
+    }
 
     World world;
     int x;

@@ -280,7 +280,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ae9aa5bf6a77c30419ce0fc3bf1d7afc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  wallSprite: {fileID: 21300016, guid: 2ea5616137df8e94cb8121c3c00e509a, type: 3}
   floorSprite: {fileID: 21300000, guid: 6ae42db670526b14e9b51339e76b896b, type: 3}
 --- !u!4 &345182176
 Transform:
@@ -491,7 +490,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 521190725}
-        m_MethodName: SetMode_BuildInstalledObject
+        m_MethodName: SetMode_BuildFurniture
         m_Mode: 5
         m_Arguments:
           m_ObjectArgument: {fileID: 0}

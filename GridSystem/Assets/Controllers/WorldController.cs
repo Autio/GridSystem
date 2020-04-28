@@ -11,8 +11,8 @@ public class WorldController : MonoBehaviour
     public static WorldController Instance { get; protected set; }
 
     Dictionary<Tile, GameObject> tileGameObjectMap;
-    Dictionary<InstalledObject, GameObject> installedObjectGameObjectMap;
-    Dictionary<string, Sprite> installedObjectSprites;
+    Dictionary<Furniture, GameObject> FurnitureGameObjectMap;
+    Dictionary<string, Sprite> FurnitureSprites;
 
     public World World { get; protected set; }
 
@@ -21,15 +21,7 @@ public class WorldController : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        // Initialize sprite dictionary for installed objects
-        installedObjectSprites = new Dictionary<string, Sprite>();
-        Sprite[] sprites = Resources.LoadAll<Sprite>("Sprites/InstalledObjects/");
-
-        // Assign sprites by name to dictionary
-        foreach(Sprite s in sprites)
-        {
-            installedObjectSprites[s.name] = s;
-        }
+        LoadSprites();
 
         if(Instance != null)
         {
@@ -39,11 +31,11 @@ public class WorldController : MonoBehaviour
         // Create blank world
         World = new World();
 
-        World.RegisterInstalledObjectCreated(OnInstalledObjectCreated);
+        World.RegisterFurnitureCreated(OnFurnitureCreated);
 
         // Dictionary to track which GameObject is rendering which Tile data
         tileGameObjectMap = new Dictionary<Tile, GameObject>();
-        installedObjectGameObjectMap = new Dictionary<InstalledObject, GameObject>();
+        FurnitureGameObjectMap = new Dictionary<Furniture, GameObject>();
 
 
         // Create gameobjects for each tile
@@ -75,6 +67,19 @@ public class WorldController : MonoBehaviour
 
     //float randomizeTileTimer = 2f;
 
+    void LoadSprites()
+    {
+        // Initialize sprite dictionary for installed objects
+        FurnitureSprites = new Dictionary<string, Sprite>();
+        Sprite[] sprites = Resources.LoadAll<Sprite>("Sprites/Furnitures/");
+
+        // Assign sprites by name to dictionary
+        foreach (Sprite s in sprites)
+        {
+            FurnitureSprites[s.name] = s;
+        }
+
+    }
     // Update is called once per frame
     void Update()
     {
@@ -143,36 +148,36 @@ public class WorldController : MonoBehaviour
         return World.GetTileAt(x, y);
     }
 
-    public void OnInstalledObjectCreated( InstalledObject obj)
+    public void OnFurnitureCreated( Furniture furn)
     {
         // FIXME: Multi-tile and rotated objects
 
         // Create a visual GameObject linked to this data
-        GameObject obj_go = new GameObject();
+        GameObject furn_go = new GameObject();
 
         // Add tile/GO pair to the dictionary
-        installedObjectGameObjectMap.Add(obj, obj_go);
+        FurnitureGameObjectMap.Add(furn, furn_go);
 
-        obj_go.name = obj.objectType + " " + obj.tile.X + "_ " + obj.tile.Y;
-        obj_go.transform.position = new Vector3(obj.tile.X, obj.tile.Y, 0);
-        obj_go.transform.SetParent(this.transform, true);
+        furn_go.name = furn.objectType + " " + furn.tile.X + "_ " + furn.tile.Y;
+        furn_go.transform.position = new Vector3(furn.tile.X, furn.tile.Y, 0);
+        furn_go.transform.SetParent(this.transform, true);
 
 
         // Add a sprite renderer
-        obj_go.AddComponent<SpriteRenderer>().sprite = GetSpriteForInstalledObject(obj);
+        furn_go.AddComponent<SpriteRenderer>().sprite = GetSpriteForFurniture(furn);
         // Put it on the right layer
-        obj_go.GetComponent<SpriteRenderer>().sortingLayerName = "InstalledObjects";
+        furn_go.GetComponent<SpriteRenderer>().sortingLayerName = "Furniture";
 
         // Add callback to check for object infor changes
-        obj.RegisterOnChangedCallback(OnInstalledObjectChanged);
+        furn.RegisterOnChangedCallback(OnFurnitureChanged);
 
     }
 
-    Sprite GetSpriteForInstalledObject(InstalledObject obj)
+    Sprite GetSpriteForFurniture(Furniture obj)
     {
         if(obj.linksToNeighbour == false)
         {
-            return installedObjectSprites[obj.objectType];
+            return FurnitureSprites[obj.objectType];
         }
 
         // Otherwise sprite name is more complex
@@ -185,38 +190,54 @@ public class WorldController : MonoBehaviour
         Tile t;
         t = World.GetTileAt(x, y + 1);
         // Is there a neighbour matching our object type?
-        if (t != null && t.installedObject != null && t.installedObject.objectType == obj.objectType)
+        if (t != null && t.furniture != null && t.furniture.objectType == obj.objectType)
         {
             spriteName += "N";
             // Tell the neighbour to update
         }
         t = World.GetTileAt(x + 1, y);
-        if (t != null && t.installedObject != null && t.installedObject.objectType == obj.objectType)
+        if (t != null && t.furniture != null && t.furniture.objectType == obj.objectType)
         {
             spriteName += "E";
         }
         t = World.GetTileAt(x, y - 1);
-        if (t != null && t.installedObject != null && t.installedObject.objectType == obj.objectType)
+        if (t != null && t.furniture != null && t.furniture.objectType == obj.objectType)
         {
             spriteName += "S";
         }
         t = World.GetTileAt(x - 1, y);
-        if (t != null && t.installedObject != null && t.installedObject.objectType == obj.objectType)
+        if (t != null && t.furniture != null && t.furniture.objectType == obj.objectType)
         {
             spriteName += "W";
         }
 
-        if(installedObjectSprites[spriteName] == false)
+        if(FurnitureSprites.ContainsKey(spriteName) == false)
         {
-            Debug.LogError("GetSpriteForInstalledObject -- No sprites with name: " + spriteName);
+            Debug.LogError("GetSpriteForFurniture -- No sprites with name: " + spriteName);
         }
 
-        return installedObjectSprites[spriteName];
+        return FurnitureSprites[spriteName];
     }
 
-    void OnInstalledObjectChanged( InstalledObject obj )
+    void OnFurnitureChanged( Furniture furn )
     {
-        Debug.LogError(" OnInstalledObjectChnaged not yet implemented");
+       
+
+        // Ensure furniture graphics are correct
+
+        if (FurnitureGameObjectMap.ContainsKey(furn) == false)
+        {
+            Debug.LogError("OnFurnitureChanged - Error in trying to change visuals for furniture map");
+            return;
+        }
+
+        GameObject furn_go = FurnitureGameObjectMap[furn];
+        // Instruct to look at neighbours and update graphics
+        furn_go.GetComponent<SpriteRenderer>().sprite = GetSpriteForFurniture(furn);
+
+       
+
     }
+
 
 }

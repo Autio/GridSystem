@@ -126,8 +126,8 @@ public class MouseController : MonoBehaviour
                         {
                             if (buildModeIsObjects == true)
                             {
-                            // Create the InstalledObject and assign it to the tile
-                            WorldController.Instance.World.PlaceInstalledObject(buildModeObjectType, t);
+                            // Create the Furniture and assign it to the tile
+                            WorldController.Instance.World.PlaceFurniture(buildModeObjectType, t);
 
                             } else
                             {
@@ -171,7 +171,7 @@ public class MouseController : MonoBehaviour
         buildModeTile = TileType.Empty;
 
     }
-    public void SetMode_BuildInstalledObject( string objectType )
+    public void SetMode_BuildFurniture( string objectType )
     {
 
         buildModeIsObjects = true;

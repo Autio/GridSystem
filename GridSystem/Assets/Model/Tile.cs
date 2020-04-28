@@ -14,12 +14,12 @@ public class Tile {
 
     UninstalledObject uninstalledObject;
 
-    public InstalledObject installedObject
+    public Furniture furniture
     {
         get; protected set;
     }
 
-    World world;
+    public World world { get; protected set; }
     int x;
     int y;
 
@@ -57,23 +57,23 @@ public class Tile {
         cbTileTypeChanged -= callback;
     }
 
-    public bool PlaceObject(InstalledObject objInstance)
+    public bool PlaceObject(Furniture objInstance)
     {
         if (objInstance == null)
         {
             // Uninstalling whatever was here before
-            installedObject = null;
+            furniture = null;
             return true;
         }
 
-        if(installedObject != null)
+        if(furniture != null)
         {
             Debug.LogError("Trying to assign an installed object to a tile that already has one");
             return false;
         }
 
         // Installing object
-        installedObject = objInstance;
+        furniture = objInstance;
         return true;
     }
 }

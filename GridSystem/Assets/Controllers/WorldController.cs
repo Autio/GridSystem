@@ -17,6 +17,7 @@ public class WorldController : MonoBehaviour
     public World World { get; protected set; }
 
     public Sprite floorSprite;
+    public Sprite emptySprite;
 
     // Start is called before the first frame update
     void Start()
@@ -54,15 +55,21 @@ public class WorldController : MonoBehaviour
                 tile_go.transform.SetParent(this.transform, true);
 
 
-                // Add a sprite renderer
+                // Add a sprite renderer 
+                // Add a default sprite for empty tiles
                 SpriteRenderer tile_sr = tile_go.AddComponent<SpriteRenderer>();
+                tile_go.GetComponent<SpriteRenderer>().sprite = emptySprite;
 
                 // Add callback to check for tile type changes
                 tile_data.RegisterTileTypeChangedCallback(OnTileTypeChanged);
 
             }
         }
-        World.RandomizeTiles();
+
+        // Center the camera
+        Camera.main.transform.position = new Vector3(World.Width / 2, World.Height / 2, Camera.main.transform.position.z);
+
+        // World.RandomizeTiles();
     }
 
     //float randomizeTileTimer = 2f;

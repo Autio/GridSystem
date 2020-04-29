@@ -7,7 +7,7 @@ public class World
 {
     Tile[,] tiles;
 
-    Dictionary<string, Furniture> FurniturePrototypes;
+    Dictionary<string, Furniture> furniturePrototypes;
 
     int width, height;
     public int Width { get => width; }
@@ -16,13 +16,14 @@ public class World
     Action<Furniture> cbFurnitureCreated;
     Action<Tile> cbTileChanged;
 
+
     // Queues are like arrays but you only put stuff at the end and take it from front
     // TODO: Replace with a dedicated class for managing job queues
-    public Queue<Job> jobQueue;
+    public JobQueue jobQueue;
 
     public World(int width = 100, int height = 100)
     {
-        jobQueue = new Queue<Job>();
+        jobQueue = new JobQueue();
         
         this.width = width;
         this.height = height;
@@ -48,9 +49,9 @@ public class World
 
     void CreateFurniturePrototypes()
     {
-        FurniturePrototypes = new Dictionary<string, Furniture>();
+        furniturePrototypes = new Dictionary<string, Furniture>();
 
-        FurniturePrototypes.Add("Wall",
+        furniturePrototypes.Add("Wall",
             Furniture.CreatePrototype(
             "Wall",
             0,      // Impassable
@@ -87,13 +88,13 @@ public class World
     public void PlaceFurniture(string objectType, Tile t)
     {
         // FIXME: Assumes 1x1 tiles, change later
-        if (FurniturePrototypes.ContainsKey(objectType) == false)
+        if (furniturePrototypes.ContainsKey(objectType) == false)
             {
             Debug.LogError("FurniturePrototypes doesn't contain a proto for the key: " + objectType);
 
         }
 
-        Furniture obj = Furniture.PlaceInstance(FurniturePrototypes[objectType], t);
+        Furniture obj = Furniture.PlaceInstance(furniturePrototypes[objectType], t);
         if(obj == null)
         {
             // Failed to place object. Probably something there already
@@ -170,7 +171,18 @@ public class World
 
     public bool IsFurniturePlacementValid(string furnitureType, Tile t)
     {
-        return FurniturePrototypes[furnitureType].IsValidPosition(t);
+        return furniturePrototypes[furnitureType].IsValidPosition(t);
+        
+    }
+
+    public Furniture GetFurniturePrototype(string objectType)
+    {
+        if(furniturePrototypes.ContainsKey(objectType) == false)
+        {
+            Debug.LogError("No furniture of type " + objectType);
+            return null;
+        }
+        return furniturePrototypes[objectType];
         
     }
 

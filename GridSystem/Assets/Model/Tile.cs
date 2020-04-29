@@ -19,6 +19,8 @@ public class Tile {
         get; protected set;
     }
 
+    public Job pendingFurnitureJob;
+
     public World world { get; protected set; }
     int x;
     int y;

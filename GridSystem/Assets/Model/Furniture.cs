@@ -30,7 +30,7 @@ public class Furniture
 
     Action<Furniture> cbOnChanged;
 
-    Func<Tile, bool> funcPositionValidation;
+    public Func<Tile, bool> funcPositionValidation;
 
     protected Furniture()
     {
@@ -47,7 +47,7 @@ public class Furniture
         obj.height = height;
         obj.linksToNeighbour = linksToNeighbour;
 
-        obj.funcPositionValidation = obj.IsValidPosition; // override for special cases
+        obj.funcPositionValidation = obj.__IsValidPosition; // override for special cases
 
         return obj;
     }
@@ -132,6 +132,11 @@ public class Furniture
 
     public bool IsValidPosition(Tile t)
     {
+        return funcPositionValidation(t);
+    }
+
+    public bool __IsValidPosition(Tile t)
+    {
         // ensure the tile is Floor
         // Ensure there's no furniture
         if(t.Type != TileType.Floor)
@@ -148,7 +153,7 @@ public class Furniture
         return true;
     }
 
-    public bool IsValidPosition_Door(Tile t)
+    public bool __IsValidPosition_Door(Tile t)
     {
         // Ensure there's a pair of N/S or E/W walls
         if (IsValidPosition(t) == false)

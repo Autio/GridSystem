@@ -16,8 +16,14 @@ public class World
     Action<Furniture> cbFurnitureCreated;
     Action<Tile> cbTileChanged;
 
+    // Queues are like arrays but you only put stuff at the end and take it from front
+    // TODO: Replace with a dedicated class for managing job queues
+    public Queue<Job> jobQueue;
+
     public World(int width = 100, int height = 100)
     {
+        jobQueue = new Queue<Job>();
+        
         this.width = width;
         this.height = height;
 
@@ -160,6 +166,12 @@ public class World
             }
         }
 
+    }
+
+    public bool IsFurniturePlacementValid(string furnitureType, Tile t)
+    {
+        return FurniturePrototypes[furnitureType].IsValidPosition(t);
+        
     }
 
 }

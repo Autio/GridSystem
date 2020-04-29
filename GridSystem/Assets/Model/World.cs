@@ -51,12 +51,24 @@ public class World
         // TODO: Implement object rotation
     }
 
-    public void CreateCharacter(Tile t)
+    public void Update(float deltaTime)
+    {
+        foreach(Character c in characters)
+        {
+            // Can adjust system time here for game speed-up etc 
+            c.Update(deltaTime);
+        }
+    }
+
+    public Character CreateCharacter(Tile t)
     {
         Character c = new Character(t);
+        characters.Add(c);
 
         if(cbCharacterCreated != null)
             cbCharacterCreated(c);
+
+        return c;
     }
 
     void CreateFurniturePrototypes()

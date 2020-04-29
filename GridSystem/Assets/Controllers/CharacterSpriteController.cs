@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+
 public class CharacterSpriteController : MonoBehaviour
 {
 
@@ -23,7 +24,9 @@ public class CharacterSpriteController : MonoBehaviour
         world.RegisterCharacterCreated(OnCharacterCreated);
 
         // DEBUG
-        world.CreateCharacter(world.GetTileAt(world.Width / 2, world.Height / 2));
+        Character c = world.CreateCharacter(world.GetTileAt(world.Width / 2, world.Height / 2));
+        //c.SetDestination(world.GetTileAt(world.Width / 2 + 5, world.Height / 2));
+       
     }
 
     void LoadSprites()
@@ -51,7 +54,7 @@ public class CharacterSpriteController : MonoBehaviour
         characterGameObjectMap.Add(character, character_go);
 
         character_go.name = "Character";
-        character_go.transform.position = new Vector3(character.currTile.X, character.currTile.Y, 0);
+        character_go.transform.position = new Vector3(character.X, character.Y, 0);
         character_go.transform.SetParent(this.transform, true);
 
 
@@ -60,6 +63,20 @@ public class CharacterSpriteController : MonoBehaviour
         // Put it on the right layer
         character_go.GetComponent<SpriteRenderer>().sortingLayerName = "Character";
 
+        character.RegisterOnChangedCallback(OnCharacterChanged);
+
+    }
+
+    void OnCharacterChanged(Character character)
+    {
+        if (characterGameObjectMap.ContainsKey(character) == false)
+        {
+            Debug.LogError("OnCharacterChanged. Trying to change visuals for a character not in our dictionary");
+        }
+            GameObject char_go = characterGameObjectMap[character];
+            char_go.transform.position = new Vector3(character.X, character.Y, 0);
+             
+        
     }
 
 }

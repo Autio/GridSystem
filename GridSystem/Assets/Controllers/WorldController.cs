@@ -26,6 +26,13 @@ public class WorldController : MonoBehaviour
         Camera.main.transform.position = new Vector3(world.Width / 2, world.Height / 2, Camera.main.transform.position.z);
 
     }
+
+    void Update()
+    {
+        // Add pause/unpause, speed controls 
+        world.Update(Time.deltaTime);
+
+    }
     
     public Tile GetTileAtWorldCoord(Vector3 coord)
     {

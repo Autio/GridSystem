@@ -8,10 +8,6 @@ public class MouseController : MonoBehaviour
 {
     public GameObject circleCursorPrefab;
 
-    bool buildModeIsObjects = false;
-    TileType buildModeTile = TileType.Floor;
-    string buildModeObjectType;
-
     Vector3 lastFramePosition;
     Vector3 dragStartPosition;
     Vector3 currFramePosition;
@@ -35,23 +31,6 @@ public class MouseController : MonoBehaviour
         UpdateCameraMovement();     
         
     }
-
-    //void UpdateCursor()
-    //{
-    //    // Update circle cursor position 
-    //    Tile tileUnderMouse = WorldController.Instance.GetTileAtWorldCoord(currFramePosition);
-
-    //    if (tileUnderMouse != null)
-    //    {
-    //        circleCursor.SetActive(true);
-    //        Vector3 cursorPosition = new Vector3(tileUnderMouse.X, tileUnderMouse.Y, 0);
-    //        circleCursor.transform.position = cursorPosition;
-    //    }
-    //    else
-    //    {
-    //        circleCursor.SetActive(false);
-    //    }
-    //}
 
     void UpdateDragging()
     {
@@ -97,7 +76,7 @@ public class MouseController : MonoBehaviour
             {
                 for (int y = start_y; y <= end_y; y++)
                 {
-                    Tile t = WorldController.Instance.World.GetTileAt(x, y);
+                    Tile t = WorldController.Instance.world.GetTileAt(x, y);
 
                     if (t != null)
                     {
@@ -113,44 +92,18 @@ public class MouseController : MonoBehaviour
         // End drag
         if (Input.GetMouseButtonUp(0))
             {
+                BuildModeController bmc = GameObject.FindObjectOfType<BuildModeController>();
 
                 for (int x = start_x; x <= end_x; x++)
                 {
                     for (int y = start_y; y <= end_y; y++)
                     {
                         // Build object or install one
-                        Tile t = WorldController.Instance.World.GetTileAt(x, y);
+                        Tile t = WorldController.Instance.world.GetTileAt(x, y);
                         if (t != null)
                         {
-                            if (buildModeIsObjects == true)
-                            {
-                                // Create the Furniture and assign it to the tile
-                                string furnitureType = buildModeObjectType;
-
-                                // Check whether can build furniture on the selected tile
-                                // Run ValidPlacement function
-                                if (WorldController.Instance.World.IsFurniturePlacementValid(furnitureType, t) &&
-                                t.pendingFurnitureJob == null) {
-                                    Job j = new Job(t, (theJob) => {
-                                    WorldController.Instance.World.PlaceFurniture(furnitureType, t);
-                                        t.pendingFurnitureJob = null;
-                                    }
-                                    );
-
-                                // FIXME: Set flags better. Too easy to forget to clear them and set them
-                                t.pendingFurnitureJob = j;
-
-                                j.RegisterJobCancelCallback((theJob) => { theJob.tile.pendingFurnitureJob = null; });
-
-                                // Add the job to the queue
-                                WorldController.Instance.World.jobQueue.Enqueue(j);
-                                Debug.Log("Job queue size: " + WorldController.Instance.World.jobQueue.Count);
-                            }
-
-                        } else
-                            {
-                                t.Type = buildModeTile;
-                            }
+                            // Call BuildModeConteroller::DoBuild
+                            bmc.DoBuild(t);
                         }
                     }
 
@@ -177,24 +130,4 @@ public class MouseController : MonoBehaviour
         lastFramePosition.z = 0;
     }
 
-    public void SetMode_BuildFloor()
-    {
-        buildModeIsObjects = false;
-        buildModeTile = TileType.Floor;
-
-    }
-    public void SetMode_Bulldoze()
-    {
-        buildModeIsObjects = false;
-        buildModeTile = TileType.Empty;
-
-    }
-    public void SetMode_BuildFurniture( string objectType )
-    {
-
-        buildModeIsObjects = true;
-        buildModeObjectType = objectType;
-
-
-    }
 }

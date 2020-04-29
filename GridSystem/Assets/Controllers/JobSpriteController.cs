@@ -36,7 +36,7 @@ public class JobSpriteController : MonoBehaviour
         sr.sprite = fsc.GetSpriteForFurniture(job.jobObjectType);
         sr.color = new Color(.6f, 1f, .6f, 0.35f);
         // Put it on the right layer
-        job_go.GetComponent<SpriteRenderer>().sortingLayerName = "Furniture";
+        job_go.GetComponent<SpriteRenderer>().sortingLayerName = "Jobs";
 
         job.RegisterJobCompleteCallback(OnJobEnded);
         job.RegisterJobCancelCallback(OnJobEnded);

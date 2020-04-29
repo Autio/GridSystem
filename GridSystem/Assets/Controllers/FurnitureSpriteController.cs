@@ -55,11 +55,10 @@ public class FurnitureSpriteController : MonoBehaviour
         furn_go.transform.position = new Vector3(furn.tile.X, furn.tile.Y, 0);
         furn_go.transform.SetParent(this.transform, true);
 
-
-        // Add a sprite renderer
-        furn_go.AddComponent<SpriteRenderer>().sprite = GetSpriteForFurniture(furn);
-        // Put it on the right layer
-        furn_go.GetComponent<SpriteRenderer>().sortingLayerName = "Furniture";
+        SpriteRenderer sr = furn_go.AddComponent<SpriteRenderer>();
+        sr.sprite = GetSpriteForFurniture(furn);
+        sr.sortingLayerName = "Furniture";
+        
 
         // Add callback to check for object infor changes
         furn.RegisterOnChangedCallback(OnFurnitureChanged);

@@ -78,4 +78,31 @@ public class Tile {
         furniture = objInstance;
         return true;
     }
+
+    // Are two tiles adjacent? 
+    public bool IsNeighbour(Tile tile, bool diagOkay = false)
+    {
+        if(this.X == tile.X && (this.Y == tile.Y + 1 || this.Y == tile.Y-1))
+            {
+            return true;
+        }
+        if (this.Y == tile.Y && (this.X == tile.X + 1 || this.X == tile.X - 1))
+            {
+            return true;
+        }
+
+        if (diagOkay)
+        {
+            if (this.X == tile.X +1 && (this.Y == tile.Y + 1 || this.Y == tile.Y - 1))
+            {
+                return true;
+            }
+            if (this.X == tile.X - 1 && (this.Y == tile.Y + 1 || this.Y == tile.Y - 1))
+            {
+                return true;
+            }
+
+        }
+        return false;
+    }
 }

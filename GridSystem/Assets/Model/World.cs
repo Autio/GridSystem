@@ -6,6 +6,7 @@ using System;
 public class World
 {
     Tile[,] tiles;
+    List<Character> characters; 
 
     Dictionary<string, Furniture> furniturePrototypes;
 
@@ -15,7 +16,7 @@ public class World
 
     Action<Furniture> cbFurnitureCreated;
     Action<Tile> cbTileChanged;
-
+    Action<Character> cbCharacterCreated;
 
     // Queues are like arrays but you only put stuff at the end and take it from front
     // TODO: Replace with a dedicated class for managing job queues
@@ -43,8 +44,19 @@ public class World
 
 
         CreateFurniturePrototypes();
+
+        characters = new List<Character>();
+
         // TODO: Implement larger objects
         // TODO: Implement object rotation
+    }
+
+    public void CreateCharacter(Tile t)
+    {
+        Character c = new Character(t);
+
+        if(cbCharacterCreated != null)
+            cbCharacterCreated(c);
     }
 
     void CreateFurniturePrototypes()
@@ -120,6 +132,16 @@ public class World
         cbFurnitureCreated -= callbackfunc;
     }
 
+    public void RegisterCharacterCreated(Action<Character> callbackfunc)
+    {
+        cbCharacterCreated += callbackfunc;
+    }
+
+
+    public void UnregisterCharacterCreated(Action<Character> callbackfunc)
+    {
+        cbCharacterCreated -= callbackfunc;
+    }
     public void RegisterTileChanged(Action<Tile> callbackfunc)
     {
         cbTileChanged += callbackfunc;

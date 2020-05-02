@@ -2,13 +2,13 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Path_TileGraph 
+public class Path_TileGraph
 {
     // Class constructs a path-finding compatible graph of our world. 
     // Each tile is a node. Each walkable neighbour from a tile is 
     // linked by edges
 
-    Dictionary<Tile, Path_Node<Tile>> nodes;
+    public Dictionary<Tile, Path_Node<Tile>> nodes { get; protected set; }
 
     public Path_TileGraph(World world)
     {
@@ -24,13 +24,13 @@ public class Path_TileGraph
             {
                 Tile t = world.GetTileAt(x, y);
 
-                if (t.movementCost > 0) // Tiles with movement cost of 0 are unwalkable
+               // if (t.movementCost > 0) // Tiles with movement cost of 0 are unwalkable
 
-                {
+               // {
                     Path_Node<Tile> n = new Path_Node<Tile>();
                     n.data = t;
                     nodes.Add(t, n);
-                }
+               // }
             }
 
         Debug.Log("Path_TileGraph: Created " + nodes.Count + " nodes.");

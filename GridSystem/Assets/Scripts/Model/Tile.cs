@@ -16,7 +16,7 @@ public class Tile {
 
     public Furniture furniture
     {
-        get; protected set;
+        get; protected set; 
     }
 
     public Job pendingFurnitureJob;

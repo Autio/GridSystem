@@ -9,7 +9,7 @@ public class World
     List<Character> characters;
     
     // Pathfinding graph used to navigate world map
-    Path_TileGraph tileGraph;
+    public Path_TileGraph tileGraph { get; set; }
 
     Dictionary<string, Furniture> furniturePrototypes;
 
@@ -124,14 +124,14 @@ public class World
 
     public Tile GetTileAt(int x, int y)
     {
-        if ( x > Width || x < 0 )
+        if ( x >= Width || x < 0 )
         {
-            Debug.LogError("Tile at x " + x + " is out of range");
+          // Debug.LogError("Tile at x " + x + " is out of range");
             return null;
         }
-        if (y > height || y < 0)
+        if (y >= height || y < 0)
         {
-            Debug.LogError("Tile at y " + y + " is out of range");
+          //   Debug.LogError("Tile at y " + y + " is out of range");
             return null;
         }
 

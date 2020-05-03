@@ -2,8 +2,11 @@
 using System.Collections.Generic;
 using UnityEngine;
 using System;
+using System.Xml;
+using System.Xml.Schema;
+using System.Xml.Serialization;
 
-public class World
+public class World : IXmlSerializable
 {
     Tile[,] tiles;
     List<Character> characters;
@@ -25,7 +28,7 @@ public class World
     // TODO: Replace with a dedicated class for managing job queues
     public JobQueue jobQueue;
 
-    public World(int width = 100, int height = 100)
+    public World(int width, int height)
     {
         jobQueue = new JobQueue();
         
@@ -260,4 +263,35 @@ public class World
         
     }
 
+    ///////////////////////////////////////////////////////////////////////////
+    ///
+    ///                         SAVING AND LOADING
+    ///
+    ///////////////////////////////////////////////////////////////////////////
+
+    public World()
+    {
+
+    }
+
+    public XmlSchema GetSchema()
+    {
+        return null;
+    }
+
+    public void WriteXml(XmlWriter writer)
+    {
+        // Save info
+        writer.WriteAttributeString("Width", width.ToString());
+        writer.WriteAttributeString("Height", height.ToString());
+
+        //writer.WriteStartElement("Width");
+        //writer.WriteValue(width);
+        //writer.WriteEndElement();
+
+    }
+    public void ReadXml(XmlReader reader)
+    {
+        // Load info
+    }
 }

@@ -16,9 +16,8 @@ public class World : IXmlSerializable
 
     Dictionary<string, Furniture> furniturePrototypes;
 
-    int width, height;
-    public int Width { get => width; }
-    public int Height { get => height; }
+    public int Width { get; protected set; }
+    public int Height { get; protected set; }
 
     Action<Furniture> cbFurnitureCreated;
     Action<Tile> cbTileChanged;
@@ -28,34 +27,32 @@ public class World : IXmlSerializable
     // TODO: Replace with a dedicated class for managing job queues
     public JobQueue jobQueue;
 
-    public World(int width, int height)
-    {
-        jobQueue = new JobQueue();
-        
-        this.width = width;
-        this.height = height;
+public World(int width, int height) {
+		SetupWorld(width, height);
+	}
 
-        tiles = new Tile[width, height];
+	void SetupWorld(int width, int height) {
+		jobQueue = new JobQueue();
 
-        for (int x = 0; x < width; x++)
-        {
-            for (int y = 0; y < height; y++)
-            {
-                tiles[x, y] = new Tile(this, x, y);
-                tiles[x, y].RegisterTileTypeChangedCallback( OnTileChanged );
-            }
-        }
+		Width = width;
+		Height = height;
 
-        Debug.Log("World created with " + (width * height) + " tiles");
+		tiles = new Tile[Width,Height];
 
+		for (int x = 0; x < Width; x++) {
+			for (int y = 0; y < Height; y++) {
+				tiles[x,y] = new Tile(this, x, y);
+				tiles[x,y].RegisterTileTypeChangedCallback( OnTileChanged );
+			}
+		}
 
-        CreateFurniturePrototypes();
+		Debug.Log ("World created with " + (Width*Height) + " tiles.");
 
-        characters = new List<Character>();
+		CreateFurniturePrototypes();
 
-        // TODO: Implement larger objects
-        // TODO: Implement object rotation
-    }
+		characters = new List<Character>();
+
+	}
 
     public void Update(float deltaTime)
     {
@@ -132,7 +129,7 @@ public class World : IXmlSerializable
           // Debug.LogError("Tile at x " + x + " is out of range");
             return null;
         }
-        if (y >= height || y < 0)
+        if (y >= Height || y < 0)
         {
           //   Debug.LogError("Tile at y " + y + " is out of range");
             return null;
@@ -221,9 +218,9 @@ public class World : IXmlSerializable
 
     public void RandomizeTiles()
     {
-        for (int x = 0; x < width; x++)
+        for (int x = 0; x < Width; x++)
         {
-            for (int y = 0; y < height; y++)
+            for (int y = 0; y < Height; y++)
             {
                 if (UnityEngine.Random.Range(0, 2) == 0)
                 {
@@ -282,16 +279,45 @@ public class World : IXmlSerializable
     public void WriteXml(XmlWriter writer)
     {
         // Save info
-        writer.WriteAttributeString("Width", width.ToString());
-        writer.WriteAttributeString("Height", height.ToString());
+        writer.WriteAttributeString("Width", Width.ToString());
+        writer.WriteAttributeString("Height", Height.ToString());
 
-        //writer.WriteStartElement("Width");
-        //writer.WriteValue(width);
-        //writer.WriteEndElement();
+        writer.WriteStartElement("Tiles");
+        for (int x = 0; x < Width; x++)
+        {
+            for (int y = 0; y < Height; y++)
+            {
+                writer.WriteStartElement("Tile");
+                tiles[x, y].WriteXml(writer);
+                writer.WriteEndElement();
+            }
+        }
+        writer.WriteEndElement();
+
+        ////writer.WriteStartElement("Width");
+        ////writer.WriteValue(width);
+        ////writer.WriteEndElement();
 
     }
     public void ReadXml(XmlReader reader)
     {
         // Load info
+
+       reader.MoveToAttribute("Width");
+       Width = reader.ReadContentAsInt();
+       reader.MoveToAttribute("Height");
+       Height = reader.ReadContentAsInt();
+       reader.MoveToElement();
+
+       SetupWorld(Width, Height);
+
+        reader.ReadToDescendant("Tiles");
+        reader.ReadToDescendant("Tile");
+        while (reader.IsStartElement("Tile"))
+        {
+
+            reader.ReadToNextSibling("Tile");
+        }
+
     }
 }

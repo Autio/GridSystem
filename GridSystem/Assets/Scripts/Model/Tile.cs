@@ -2,11 +2,14 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System.Xml;
+using System.Xml.Schema;
+using System.Xml.Serialization;
 
 // Should there be a type? 
 public enum TileType { Empty, Floor, Space, Scaffolding, Metal, Wood };
 
-public class Tile { 
+public class Tile : IXmlSerializable { 
 
     TileType _type = TileType.Empty;
 
@@ -60,14 +63,14 @@ public class Tile {
                 cbTileChanged(this);
         }
     }
-    public int X { get => x; }
-    public int Y { get => y; }
+    public int X { get; protected set; }
+    public int Y { get; protected set; }
 
     public Tile( World world, int x, int y )
     {
         this.world = world;
-        this.x = x;
-        this.y = y;
+        this.X = x;
+        this.Y = y;
     }
 
     public void RegisterTileTypeChangedCallback(Action<Tile> callback)
@@ -171,5 +174,29 @@ public class Tile {
         }
 
         return ns;
+    }
+
+
+    public XmlSchema GetSchema()
+    {
+        return null;
+    }
+
+    public void WriteXml(XmlWriter writer)
+    {
+        writer.WriteAttributeString("X", X.ToString());
+        writer.WriteAttributeString("Y", Y.ToString());
+        writer.WriteAttributeString("Type", ((int)Type).ToString());
+    }
+
+    public void ReadXml(XmlReader reader)
+    {
+        reader.MoveToAttribute("X");
+        X = reader.ReadContentAsInt();
+        reader.MoveToAttribute("Y");
+        Y = reader.ReadContentAsInt();
+        reader.MoveToAttribute("Type");
+        Type = (TileType)reader.ReadContentAsInt();
+
     }
 }

@@ -303,20 +303,42 @@ public World(int width, int height) {
     {
         // Load info
 
-       reader.MoveToAttribute("Width");
-       Width = reader.ReadContentAsInt();
-       reader.MoveToAttribute("Height");
-       Height = reader.ReadContentAsInt();
-       reader.MoveToElement();
+      
+        Width = int.Parse(reader.GetAttribute("Width"));
+        Height = int.Parse(reader.GetAttribute("Height"));
 
-       SetupWorld(Width, Height);
+        reader.MoveToElement();
 
+        SetupWorld(Width, Height);
+
+        while(reader.Read())
+        {
+            switch(reader.Name)
+            { 
+                case "Tiles":
+                 
+                ReadXml_Tiles(reader);
+                    
+                break;
+            }
+        }
+
+       
+    }
+
+    void ReadXml_Tiles(XmlReader reader)
+    {
         reader.ReadToDescendant("Tiles");
         reader.ReadToDescendant("Tile");
         while (reader.IsStartElement("Tile"))
         {
 
-            reader.ReadToNextSibling("Tile");
+            int x = int.Parse(reader.GetAttribute("X"));
+            int y = int.Parse(reader.GetAttribute("Y"));
+
+            tiles[x, y].ReadXml(reader);
+           // reader.ReadToNextSibling("Tile");
+
         }
 
     }

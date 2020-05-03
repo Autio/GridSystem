@@ -128,6 +128,9 @@ public class Tile {
     }
 
     // return array of all neighbouring tiles
+    // Is diagonal movement ok?
+    // Is clipping corners ok?
+
     public Tile[] GetNeighbours(bool diagOkay = false)
     {
         Tile[] ns;
@@ -155,6 +158,7 @@ public class Tile {
 
         if(diagOkay == true)
         {
+            
             n = world.GetTileAt(X + 1, Y + 1);
             ns[4] = n; // Could be null
             n = world.GetTileAt(X + 1, Y - 1);

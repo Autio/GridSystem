@@ -53,6 +53,13 @@ public class Path_TileGraph
                 if(neighbours[i] != null && neighbours[i].movementCost > 0)
                 {
                     // The neighbour exists and is walkable, so create an edge. 
+
+                    // But make sure we aren't clipping a diagonal
+                    if(IsClippingCorner(t, neighbours[i]))
+                    {
+                        continue; // Skip to the next neighbour and do NOT build an edge.
+                    }
+
                     Path_Edge<Tile> e = new Path_Edge<Tile>();
                     e.cost = neighbours[i].movementCost;
                     e.node = nodes[neighbours[i]];
@@ -67,6 +74,30 @@ public class Path_TileGraph
         }
         Debug.Log("Path_TileGraph: Created " + edgeCount.ToString() + " edges.");
 
+
+    }
+
+    bool IsClippingCorner(Tile curr, Tile neighbour)
+    {
+        // When moving diagonally, check if we are clipping
+        if(Mathf.Abs(curr.X - neighbour.X) + Mathf.Abs(curr.Y - neighbour.Y) == 2)
+        {
+            // Diagonal
+            int dX = curr.X - neighbour.X;
+            int dY = curr.Y - neighbour.Y;
+
+            if(curr.world.GetTileAt(curr.X - dX, curr.Y).movementCost == 0)
+            {
+                // E or W is unwalkable, so movement would be clipped
+                return true;
+            }
+            if (curr.world.GetTileAt(curr.X, curr.Y - dY).movementCost == 0)
+            {
+                // N or S is unwalkable, so movement would be clipped
+                return true;
+            }
+        }
+        return false;
 
     }
 

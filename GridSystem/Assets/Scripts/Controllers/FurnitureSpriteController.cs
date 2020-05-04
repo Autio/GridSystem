@@ -7,8 +7,8 @@ using UnityEngine;
 public class FurnitureSpriteController : MonoBehaviour
 {
        
-    Dictionary<Furniture, GameObject> FurnitureGameObjectMap;
-    Dictionary<string, Sprite> FurnitureSprites;
+    Dictionary<Furniture, GameObject> furnitureGameObjectMap;
+    Dictionary<string, Sprite> furnitureSprites;
 
     World world
     {
@@ -19,9 +19,16 @@ public class FurnitureSpriteController : MonoBehaviour
     {
         LoadSprites();
 
-        FurnitureGameObjectMap = new Dictionary<Furniture, GameObject>();
+        furnitureGameObjectMap = new Dictionary<Furniture, GameObject>();
 
         world.RegisterFurnitureCreated(OnFurnitureCreated);
+
+        // Go through existing furniture from a save which was loaded OnEnable and 
+        // Run the callback manually
+        foreach(Furniture f in world.furnitures)
+        {
+            OnFurnitureCreated(f);
+        }
 
     }
 
@@ -30,13 +37,13 @@ public class FurnitureSpriteController : MonoBehaviour
     void LoadSprites()
     {
         // Initialize sprite dictionary for installed objects
-        FurnitureSprites = new Dictionary<string, Sprite>();
+        furnitureSprites = new Dictionary<string, Sprite>();
         Sprite[] sprites = Resources.LoadAll<Sprite>("Sprites/Furnitures/");
 
         // Assign sprites by name to dictionary
         foreach (Sprite s in sprites)
         {
-            FurnitureSprites[s.name] = s;
+            furnitureSprites[s.name] = s;
         }
 
     }
@@ -49,7 +56,7 @@ public class FurnitureSpriteController : MonoBehaviour
         GameObject furn_go = new GameObject();
 
         // Add tile/GO pair to the dictionary
-        FurnitureGameObjectMap.Add(furn, furn_go);
+        furnitureGameObjectMap.Add(furn, furn_go);
 
         furn_go.name = furn.objectType + " " + furn.tile.X + "_ " + furn.tile.Y;
         furn_go.transform.position = new Vector3(furn.tile.X, furn.tile.Y, 0);
@@ -69,7 +76,7 @@ public class FurnitureSpriteController : MonoBehaviour
     {
         if(obj.linksToNeighbour == false)
         {
-            return FurnitureSprites[obj.objectType];
+            return furnitureSprites[obj.objectType];
         }
 
         // Otherwise sprite name is more complex
@@ -103,12 +110,12 @@ public class FurnitureSpriteController : MonoBehaviour
             spriteName += "W";
         }
 
-        if(FurnitureSprites.ContainsKey(spriteName) == false)
+        if(furnitureSprites.ContainsKey(spriteName) == false)
         {
             Debug.LogError("GetSpriteForFurniture -- No sprites with name: " + spriteName);
         }
 
-        return FurnitureSprites[spriteName];
+        return furnitureSprites[spriteName];
     }
 
     void OnFurnitureChanged( Furniture furn )
@@ -116,13 +123,13 @@ public class FurnitureSpriteController : MonoBehaviour
        
         // Ensure furniture graphics are correct
 
-        if (FurnitureGameObjectMap.ContainsKey(furn) == false)
+        if (furnitureGameObjectMap.ContainsKey(furn) == false)
         {
             Debug.LogError("OnFurnitureChanged - Error in trying to change visuals for furniture map");
             return;
         }
 
-        GameObject furn_go = FurnitureGameObjectMap[furn];
+        GameObject furn_go = furnitureGameObjectMap[furn];
         // Instruct to look at neighbours and update graphics
         furn_go.GetComponent<SpriteRenderer>().sprite = GetSpriteForFurniture(furn);   
 
@@ -130,13 +137,13 @@ public class FurnitureSpriteController : MonoBehaviour
 
     public Sprite GetSpriteForFurniture(string objectType)
     {
-        if (FurnitureSprites.ContainsKey(objectType))
+        if (furnitureSprites.ContainsKey(objectType))
         {
-            return FurnitureSprites[objectType]; 
+            return furnitureSprites[objectType]; 
         }
-        if (FurnitureSprites.ContainsKey(objectType + "_"))
+        if (furnitureSprites.ContainsKey(objectType + "_"))
         {
-            return FurnitureSprites[objectType + "_"];
+            return furnitureSprites[objectType + "_"];
         }
 
         Debug.LogError("GetSpriteForFurniture. No sprites with the name: " + objectType);

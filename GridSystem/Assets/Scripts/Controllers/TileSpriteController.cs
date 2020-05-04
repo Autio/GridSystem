@@ -46,6 +46,8 @@ public class TileSpriteController : MonoBehaviour
                 tile_sr.sprite = emptySprite;
                 tile_sr.sortingLayerName = "Tiles";
 
+                OnTileChanged(tile_data);
+
             }
         }
 

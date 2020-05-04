@@ -2,8 +2,11 @@
 using System.Collections.Generic;
 using UnityEngine;
 using System;
+using System.Xml;
+using System.Xml.Schema;
+using System.Xml.Serialization;
 
-public class Character 
+public class Character : IXmlSerializable
 {
     public float X
     {
@@ -30,10 +33,15 @@ public class Character
     float movementPercentage; // Between 0 and 1 as we go from currTile to destTile
 
     float speed = 3f; // Tiles per second
+    Action<Character> cbCharacterChanged;
 
     Job myJob;
 
-    Action<Character> cbCharacterChanged;
+    public Character()
+    {
+        // Use only for serialization;
+    }
+
 
     public Character(Tile tile)
     {
@@ -194,5 +202,21 @@ public class Character
         myJob = null;
     }
 
+    public XmlSchema GetSchema()
+    {
+        return null;
+    }
+
+    public void WriteXml(XmlWriter writer)
+    {
+        writer.WriteAttributeString("X", currTile.X.ToString());
+        writer.WriteAttributeString("Y", currTile.Y.ToString());
+
+    }
+
+    public void ReadXml(XmlReader reader)
+    {
+
+    }
 
 }

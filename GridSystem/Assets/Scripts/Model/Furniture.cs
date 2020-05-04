@@ -2,6 +2,9 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System.Xml;
+using System.Xml.Schema;
+using System.Xml.Serialization;
 
 public class Furniture
 {
@@ -89,7 +92,7 @@ public class Furniture
 
             t = tile.world.GetTileAt(x, y + 1);
             // Is there a neighbour matching our object type?
-            if (t != null && t.furniture != null && t.furniture.objectType == obj.objectType)
+            if (t != null && t.furniture != null && t.furniture.cbOnChanged != null && t.furniture.objectType == obj.objectType)
             {
                 // Trigger callback with self
                 // Have northern neighbour with same object type as us so 
@@ -98,17 +101,17 @@ public class Furniture
                 
             }
             t = tile.world.GetTileAt(x + 1, y);
-            if (t != null && t.furniture != null && t.furniture.objectType == obj.objectType)
+            if (t != null && t.furniture != null && t.furniture.cbOnChanged != null && t.furniture.objectType == obj.objectType)
             {
                 t.furniture.cbOnChanged(t. furniture);
             }
             t = tile.world.GetTileAt(x, y - 1);
-            if (t != null && t. furniture != null && t.furniture.objectType == obj.objectType)
+            if (t != null && t. furniture != null && t.furniture.cbOnChanged != null && t.furniture.objectType == obj.objectType)
             {
                 t.furniture.cbOnChanged(t. furniture);
             }
             t = tile.world.GetTileAt(x - 1, y);
-            if (t != null && t.furniture != null && t.furniture.objectType == obj.objectType)
+            if (t != null && t.furniture != null && t.furniture.cbOnChanged != null && t.furniture.objectType == obj.objectType)
             {
                 t.furniture.cbOnChanged(t.furniture);
             }
@@ -161,5 +164,26 @@ public class Furniture
             return false;
         }
         return true;
+    }
+
+    public XmlSchema GetSchema()
+    {
+        return null;
+    }
+
+    public void WriteXml(XmlWriter writer)
+    {
+        writer.WriteAttributeString("X", tile.X.ToString());
+        writer.WriteAttributeString("Y", tile.Y.ToString());
+        writer.WriteAttributeString("objectType", objectType);
+        writer.WriteAttributeString("movementCost", movementCost.ToString());
+
+    }
+
+    public void ReadXml(XmlReader reader)
+    {
+        //objectType = reader.GetAttribute("objectType");
+        // X, Y and objecType have already been set
+        movementCost = int.Parse(reader.GetAttribute("movementCost"));
     }
 }

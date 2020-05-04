@@ -23,10 +23,11 @@ public class CharacterSpriteController : MonoBehaviour
 
         world.RegisterCharacterCreated(OnCharacterCreated);
 
-        // DEBUG
-        Character c = world.CreateCharacter(world.GetTileAt(world.Width / 2, world.Height / 2));
-        //c.SetDestination(world.GetTileAt(world.Width / 2 + 5, world.Height / 2));
-       
+       // Check for pre-existing characters
+       foreach(Character c in world.characters)
+        {
+            OnCharacterCreated(c);
+        }
     }
 
     void LoadSprites()

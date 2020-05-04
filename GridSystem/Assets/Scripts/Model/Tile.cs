@@ -142,7 +142,7 @@ public class Tile : IXmlSerializable {
             ns = new Tile[4]; // N E S W
         }
         else
-        {
+        { 
             ns = new Tile[8]; // N E S W NE SE SW NW 
         }
 

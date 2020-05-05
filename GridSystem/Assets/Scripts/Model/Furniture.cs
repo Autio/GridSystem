@@ -8,6 +8,17 @@ using System.Xml.Serialization;
 
 public class Furniture
 {
+    public Dictionary<string, object> furnitureParameters;
+    public Action<Furniture, float> updateActions;
+
+    public void Update(float deltaTime)
+    {
+        if (updateActions != null)
+        {
+            updateActions(this, deltaTime);
+        }
+    }
+
     // This represents the base tile of the boject but large objects may occupy multiple ties
     public Tile tile
     {
@@ -35,24 +46,46 @@ public class Furniture
 
     public Func<Tile, bool> funcPositionValidation;
 
-    protected Furniture()
+    public Furniture()
     {
+        furnitureParameters = new Dictionary<string, object>();
+    }
 
+    // Copy Constructor
+    protected Furniture(Furniture other)
+    {
+        this.objectType = other.objectType;
+        this.movementCost = other.movementCost;
+        this.width = other.width;
+        this.height = other.height;
+        this.linksToNeighbour = other.linksToNeighbour;
+
+        furnitureParameters = new Dictionary<string, object>(other.furnitureParameters);
+        if (other.updateActions != null)
+        {
+            this.updateActions = (Action<Furniture, float>)other.updateActions.Clone();
+        }
+    }
+
+    virtual public Furniture Clone( )
+    {
+        return new Furniture(this);
     }
 
     // Used by our object factory to create the prototypical object
-    static public Furniture CreatePrototype(string objectType, float movementCost = 1f, int width = 1, int height = 1, bool linksToNeighbour = false )
+     public Furniture (string objectType, float movementCost = 1f, int width = 1, int height = 1, bool linksToNeighbour = false )
     {
-        Furniture obj = new Furniture();
-        obj.objectType = objectType;
-        obj.movementCost = movementCost;
-        obj.width = width;
-        obj.height = height;
-        obj.linksToNeighbour = linksToNeighbour;
+      
+        this.objectType = objectType;
+        this.movementCost = movementCost;
+        this.width = width;
+        this.height = height;
+        this.linksToNeighbour = linksToNeighbour;
 
-        obj.funcPositionValidation = obj.__IsValidPosition; // override for special cases
+        this.funcPositionValidation = this.__IsValidPosition; // override for special cases
 
-        return obj;
+        this.furnitureParameters = new Dictionary<string, object>(furnitureParameters);
+
     }
 
     static public Furniture PlaceInstance (Furniture proto, Tile tile)
@@ -62,14 +95,8 @@ public class Furniture
             Debug.LogError("PlaceInstance position validity function returned FALSE");
             return null;
         }
-        Furniture obj = new Furniture();
-
-        obj.objectType = proto.objectType;
-        obj.movementCost = proto.movementCost;
-        obj.width = proto.width;
-        obj.height = proto.height;
-        obj.linksToNeighbour = proto.linksToNeighbour;
-
+        Furniture obj = proto.Clone();
+    
         obj.tile = tile;
 
         // FIXME: Assumes we are 1x1
@@ -186,4 +213,6 @@ public class Furniture
         // X, Y and objecType have already been set
         movementCost = int.Parse(reader.GetAttribute("movementCost"));
     }
+
+ 
 }

@@ -86,7 +86,7 @@ public World(int width, int height) {
         furniturePrototypes = new Dictionary<string, Furniture>();
 
         furniturePrototypes.Add("Wall",
-            Furniture.CreatePrototype(
+            new Furniture(
             "Wall",
             0,      // Impassable
             1,
@@ -95,7 +95,19 @@ public World(int width, int height) {
             )
         );
 
+        furniturePrototypes.Add("Door",
+            new Furniture(
+            "Door",
+            0,      // Impassable
+            1,
+            1,
+            true    // links to neighbour
+            )
+        );
 
+        // Scriptable object behaviours
+        furniturePrototypes["Door"].furnitureParameters["openness"] = 0;
+        furniturePrototypes["Door"].updateActions += FurnitureActions.Door_UpdateAction;
     }
 
     Furniture CreateOneFurniturePrototype()

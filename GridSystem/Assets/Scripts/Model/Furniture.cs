@@ -8,7 +8,7 @@ using System.Xml.Serialization;
 
 public class Furniture
 {
-    public Dictionary<string, object> furnitureParameters;
+    public Dictionary<string, float> furnitureParameters;
     public Action<Furniture, float> updateActions;
 
     public void Update(float deltaTime)
@@ -48,7 +48,7 @@ public class Furniture
 
     public Furniture()
     {
-        furnitureParameters = new Dictionary<string, object>();
+        furnitureParameters = new Dictionary<string, float>();
     }
 
     // Copy Constructor
@@ -60,7 +60,7 @@ public class Furniture
         this.height = other.height;
         this.linksToNeighbour = other.linksToNeighbour;
 
-        furnitureParameters = new Dictionary<string, object>(other.furnitureParameters);
+        furnitureParameters = new Dictionary<string, float>(other.furnitureParameters);
         if (other.updateActions != null)
         {
             this.updateActions = (Action<Furniture, float>)other.updateActions.Clone();
@@ -84,7 +84,7 @@ public class Furniture
 
         this.funcPositionValidation = this.__IsValidPosition; // override for special cases
 
-        this.furnitureParameters = new Dictionary<string, object>(furnitureParameters);
+        this.furnitureParameters = new Dictionary<string, float>();
 
     }
 
@@ -205,6 +205,13 @@ public class Furniture
         writer.WriteAttributeString("objectType", objectType);
         writer.WriteAttributeString("movementCost", movementCost.ToString());
 
+        foreach (string k in furnitureParameters.Keys)
+        {
+            writer.WriteStartElement("Param");
+            writer.WriteAttributeString("name", k);
+            writer.WriteAttributeString("value", furnitureParameters[k].ToString());
+            writer.WriteEndElement();
+        }
     }
 
     public void ReadXml(XmlReader reader)
@@ -212,6 +219,18 @@ public class Furniture
         //objectType = reader.GetAttribute("objectType");
         // X, Y and objecType have already been set
         movementCost = int.Parse(reader.GetAttribute("movementCost"));
+
+        if (reader.ReadToDescendant("Param"))
+        {
+            do
+            {
+                string k = reader.GetAttribute("name");
+                float v = float.Parse(reader.GetAttribute("value"));
+                furnitureParameters[k] = v;
+            } while 
+            (reader.ReadToNextSibling("Param"));
+            
+        }
     }
 
  

@@ -72,6 +72,23 @@ public class FurnitureSpriteController : MonoBehaviour
 
     }
 
+    void OnFurnitureChanged(Furniture furn)
+    {
+
+        // Ensure furniture graphics are correct
+
+        if (furnitureGameObjectMap.ContainsKey(furn) == false)
+        {
+            Debug.LogError("OnFurnitureChanged - Error in trying to change visuals for furniture map");
+            return;
+        }
+
+        GameObject furn_go = furnitureGameObjectMap[furn];
+        // Instruct to look at neighbours and update graphics
+        furn_go.GetComponent<SpriteRenderer>().sprite = GetSpriteForFurniture(furn);
+
+    }
+
     public Sprite GetSpriteForFurniture(Furniture obj)
     {
         if(obj.linksToNeighbour == false)
@@ -116,23 +133,6 @@ public class FurnitureSpriteController : MonoBehaviour
         }
 
         return furnitureSprites[spriteName];
-    }
-
-    void OnFurnitureChanged( Furniture furn )
-    {
-       
-        // Ensure furniture graphics are correct
-
-        if (furnitureGameObjectMap.ContainsKey(furn) == false)
-        {
-            Debug.LogError("OnFurnitureChanged - Error in trying to change visuals for furniture map");
-            return;
-        }
-
-        GameObject furn_go = furnitureGameObjectMap[furn];
-        // Instruct to look at neighbours and update graphics
-        furn_go.GetComponent<SpriteRenderer>().sprite = GetSpriteForFurniture(furn);   
-
     }
 
     public Sprite GetSpriteForFurniture(string objectType)

@@ -116,7 +116,11 @@ public class Character : IXmlSerializable
                     pathAStar = null;
                     return;
                 }
+                // Let's ignore the first tile because that's where we are at
+                nextTile = pathAStar.Dequeue();
+
             }
+
 
             // Set the next tile
             nextTile = pathAStar.Dequeue();
@@ -132,8 +136,17 @@ public class Character : IXmlSerializable
         // Total distance from A to B
         float distToTravel = Mathf.Sqrt(Mathf.Pow(currTile.X - nextTile.X, 2) + Mathf.Pow(currTile.Y - nextTile.Y, 2));
 
+        if(nextTile.movementCost == 0)
+        {
+            Debug.LogError("FIXME: A character was trying to enter an unwalkable tile");
+            nextTile = null; // Next tile is inaccessible
+            pathAStar = null; // Our pathfinding information is stale
+            return;
+        }
+
         // How much can be traveled this Update
-        float distThisFrame = speed * deltaTime;
+        // Beware div by 0 
+        float distThisFrame = speed / nextTile.movementCost * deltaTime;
 
         // Percentage to our desination of this travel
         float percentageThisFrame = distThisFrame / distToTravel;

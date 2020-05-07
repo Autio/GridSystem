@@ -68,6 +68,12 @@ public World(int width, int height) {
             // Can adjust system time here for game speed-up etc 
             c.Update(deltaTime);
         }
+
+        foreach (Furniture f in furnitures)
+        {
+            // Can adjust system time here for game speed-up etc 
+            f.Update(deltaTime);
+        }
     }
 
     public Character CreateCharacter(Tile t)
@@ -87,21 +93,21 @@ public World(int width, int height) {
 
         furniturePrototypes.Add("Wall",
             new Furniture(
-            "Wall",
-            0,      // Impassable
-            1,
-            1,
-            true    // links to neighbour
+                "Wall",
+                0,      // Impassable
+                1,
+                1,
+                true    // links to neighbour
             )
         );
 
         furniturePrototypes.Add("Door",
             new Furniture(
-            "Door",
-            0,      // Impassable
-            1,
-            1,
-            true    // links to neighbour
+                "Door",
+                50,      // Open
+                5,
+                1,
+                false    // links to neighbour
             )
         );
 
@@ -384,26 +390,18 @@ public World(int width, int height) {
 
     void ReadXml_Tiles(XmlReader reader)
     {
-        //reader.ReadToDescendant("Tiles");
-       // reader.ReadToDescendant("Tile");
-        while (reader.Read()){
-            if (reader.Name != ("Tile"))
-            {
-                return;
-            }
+        
+        if(reader.ReadToDescendant("Tile"))
+        {
+            // There's at least one tile to save
 
-            int x = int.Parse(reader.GetAttribute("X"));
-            int y = int.Parse(reader.GetAttribute("Y"));
+            do {
+                int x = int.Parse(reader.GetAttribute("X"));
+                int y = int.Parse(reader.GetAttribute("Y"));
 
-            tiles[x, y].ReadXml(reader);
-            // reader.ReadToNextSibling("Tile");
-            if(tiles[x,y].Type == TileType.Floor)
-            {
-                Debug.Log("Floor est");
-            }
-            
+                tiles[x, y].ReadXml(reader);
 
-
+            } while (reader.ReadToNextSibling("Tile"));
         }
 
     }
@@ -412,20 +410,21 @@ public World(int width, int height) {
     {
         //reader.ReadToDescendant("Tiles");
         // reader.ReadToDescendant("Tile");
-        while (reader.Read())
+        if (reader.ReadToDescendant("Furniture"))
         {
-            if (reader.Name != "Furniture")
+            do 
             {
-                return;
-            }
+                int x = int.Parse(reader.GetAttribute("X"));
+                int y = int.Parse(reader.GetAttribute("Y"));
 
-            int x = int.Parse(reader.GetAttribute("X"));
-            int y = int.Parse(reader.GetAttribute("Y"));
-
-            Furniture f = PlaceFurniture(reader.GetAttribute("objectType"), tiles[x, y]);
-            f.ReadXml(reader);
-
+                Furniture f = PlaceFurniture(reader.GetAttribute("objectType"), tiles[x, y]);
+                f.ReadXml(reader);
+            } 
+            while (reader.ReadToNextSibling("Furniture"));
         }
+
+
+        
 
     }
 
@@ -434,20 +433,21 @@ public World(int width, int height) {
     {
         //reader.ReadToDescendant("Tiles");
         // reader.ReadToDescendant("Tile");
-        while (reader.Read())
-        {
-            if (reader.Name != "Character")
+        if (reader.ReadToDescendant("Character"))        
             {
-                return;
+                do
+                {
+                    int x = int.Parse(reader.GetAttribute("X"));
+                    int y = int.Parse(reader.GetAttribute("Y"));
+
+                    Character c = CreateCharacter(tiles[x, y]);
+                    c.ReadXml(reader);
+
+                }
+
+                while (reader.ReadToNextSibling("Character"));
             }
-
-            int x = int.Parse(reader.GetAttribute("X"));
-            int y = int.Parse(reader.GetAttribute("Y"));
-
-            Character c = CreateCharacter( tiles[x,y] );
-            c.ReadXml(reader);
-
-        }
-
     }
+
+
 }

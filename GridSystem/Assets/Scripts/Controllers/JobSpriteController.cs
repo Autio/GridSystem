@@ -22,7 +22,6 @@ public class JobSpriteController : MonoBehaviour
     void OnJobCreated(Job job)
     {
         //FIXME: Currently only accepts furniture
-        GameObject job_go = new GameObject();
 
         if (jobGameObjectMap.ContainsKey(job))
         {
@@ -30,6 +29,8 @@ public class JobSpriteController : MonoBehaviour
             Debug.LogError("OnJobCreated for a jobGO that already exists. Job probably being re-queued instead of created");
             return;
         }
+
+        GameObject job_go = new GameObject();
 
         // Add tile/GO pair to the dictionary
         jobGameObjectMap.Add(job, job_go);

@@ -203,7 +203,7 @@ public class Furniture
         writer.WriteAttributeString("X", tile.X.ToString());
         writer.WriteAttributeString("Y", tile.Y.ToString());
         writer.WriteAttributeString("objectType", objectType);
-        writer.WriteAttributeString("movementCost", movementCost.ToString());
+        //writer.WriteAttributeString("movementCost", movementCost.ToString());
 
         foreach (string k in furnitureParameters.Keys)
         {
@@ -218,7 +218,7 @@ public class Furniture
     {
         //objectType = reader.GetAttribute("objectType");
         // X, Y and objecType have already been set
-        movementCost = int.Parse(reader.GetAttribute("movementCost"));
+        //movementCost = int.Parse(reader.GetAttribute("movementCost"));
 
         if (reader.ReadToDescendant("Param"))
         {

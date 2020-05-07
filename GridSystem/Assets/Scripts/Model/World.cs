@@ -104,8 +104,8 @@ public World(int width, int height) {
         furniturePrototypes.Add("Door",
             new Furniture(
                 "Door",
-                50,      // Open
-                5,
+                1,      // Open
+                1,
                 1,
                 false    // links to neighbour
             )

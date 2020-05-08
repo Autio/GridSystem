@@ -25,10 +25,11 @@ public class Tile : IXmlSerializable {
     }
 
     public Job pendingFurnitureJob;
-
     public World world { get; protected set; }
     int x;
     int y;
+
+    const float baseTileMovementCost = 1f;
 
     public float movementCost
     {
@@ -40,9 +41,9 @@ public class Tile : IXmlSerializable {
             }
             if (furniture == null)
             {
-                return 1; // what about other tile types?
+                return baseTileMovementCost; // what about other tile types?
             }
-            return 1 * furniture.movementCost;
+            return baseTileMovementCost * furniture.movementCost;
         }
 
         set

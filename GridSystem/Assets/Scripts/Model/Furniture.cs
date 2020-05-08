@@ -44,7 +44,7 @@ public class Furniture
         get; protected set;
     }
 
-    Action<Furniture> cbOnChanged;
+    public Action<Furniture> cbOnChanged;
 
     public Func<Tile, bool> funcPositionValidation;
 

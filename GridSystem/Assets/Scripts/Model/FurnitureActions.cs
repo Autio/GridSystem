@@ -7,7 +7,7 @@ public static class FurnitureActions
     {
         if (f.furnitureParameters["is_opening"] >= 1f)
         {
-            f.furnitureParameters["openness"] += deltaTime;
+            f.furnitureParameters["openness"] += deltaTime * 2f;
             if(f.furnitureParameters["openness"] >= 1)
             {
                 f.furnitureParameters["is_opening"] = 0;
@@ -15,10 +15,15 @@ public static class FurnitureActions
         }
         else
         {
-            f.furnitureParameters["openness"] -= deltaTime;
+            f.furnitureParameters["openness"] -= deltaTime * 1.3f;
         }
 
         f.furnitureParameters["openness"] = Mathf.Clamp01(f.furnitureParameters["openness"]);
+
+        if (f.cbOnChanged != null)
+        {
+            f.cbOnChanged(f);
+        }
     }
 
     public static ENTERABILITY Door_IsEnterable(Furniture f)

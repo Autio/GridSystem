@@ -45,7 +45,6 @@ public class FurnitureSpriteController : MonoBehaviour
         {
             furnitureSprites[s.name] = s;
         }
-
     }
     
     public void OnFurnitureCreated( Furniture furn)
@@ -55,12 +54,29 @@ public class FurnitureSpriteController : MonoBehaviour
         // Create a visual GameObject linked to this data
         GameObject furn_go = new GameObject();
 
+  
         // Add tile/GO pair to the dictionary
         furnitureGameObjectMap.Add(furn, furn_go);
 
         furn_go.name = furn.objectType + " " + furn.tile.X + "_ " + furn.tile.Y;
         furn_go.transform.position = new Vector3(furn.tile.X, furn.tile.Y, 0);
         furn_go.transform.SetParent(this.transform, true);
+
+        // FIXME
+        if (furn.objectType == "Door")
+        {
+            // By default door sprite is for N/S 
+            // Check to see if there's a wall E/W, in which case rotate 90 degrees
+            Tile eastTile = world.GetTileAt(furn.tile.X + 1, furn.tile.Y);
+            Tile westTile = world.GetTileAt(furn.tile.X - 1, furn.tile.Y);
+
+            if (eastTile != null && westTile != null && eastTile.furniture != null && westTile.furniture != null &&
+                eastTile.furniture.objectType == "Wall" && westTile.furniture.objectType == "Wall")
+            {
+                furn_go.transform.rotation = Quaternion.Euler(0, 0, 90);
+                furn_go.transform.Translate(1f, 0, 0, Space.World); // hack and fix
+            }
+        }
 
         SpriteRenderer sr = furn_go.AddComponent<SpriteRenderer>();
         sr.sprite = GetSpriteForFurniture(furn);
@@ -72,32 +88,48 @@ public class FurnitureSpriteController : MonoBehaviour
 
     }
 
-    void OnFurnitureChanged(Furniture furn)
+    void OnFurnitureChanged(Furniture f)
     {
 
         // Ensure furniture graphics are correct
 
-        if (furnitureGameObjectMap.ContainsKey(furn) == false)
+        if (furnitureGameObjectMap.ContainsKey(f) == false)
         {
             Debug.LogError("OnFurnitureChanged - Error in trying to change visuals for furniture map");
             return;
         }
 
-        GameObject furn_go = furnitureGameObjectMap[furn];
+        GameObject furn_go = furnitureGameObjectMap[f];
         // Instruct to look at neighbours and update graphics
-        furn_go.GetComponent<SpriteRenderer>().sprite = GetSpriteForFurniture(furn);
+        furn_go.GetComponent<SpriteRenderer>().sprite = GetSpriteForFurniture(f);
 
     }
 
     public Sprite GetSpriteForFurniture(Furniture obj)
     {
-        if(obj.linksToNeighbour == false)
+        string spriteName = obj.objectType;
+        if (obj.linksToNeighbour == false)
         {
-            return furnitureSprites[obj.objectType];
+            // If this is a door then let's check openness
+            if (obj.objectType == "Door")
+            {
+                // Cycle through options of openness
+                for (int i = 1; i <= 8; i++)
+                {
+                    if (obj.furnitureParameters["openness"] <= 1f / (float)i)
+                    {
+                        Debug.Log("Door open stage: " + obj.furnitureParameters["openness"]);
+                        spriteName = "Door_" + (i-1).ToString();
+
+                    }
+                }
+
+            }
+            return furnitureSprites[spriteName];
         }
 
         // Otherwise sprite name is more complex
-        string spriteName = obj.objectType + "_";
+        spriteName = obj.objectType + "_";
 
         int x = obj.tile.X;
         int y = obj.tile.Y;
@@ -131,6 +163,10 @@ public class FurnitureSpriteController : MonoBehaviour
         {
             Debug.LogError("GetSpriteForFurniture -- No sprites with name: " + spriteName);
         }
+
+        Debug.Log("Placing furniture");
+     
+
 
         return furnitureSprites[spriteName];
     }

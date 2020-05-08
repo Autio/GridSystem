@@ -46,6 +46,23 @@ public class JobSpriteController : MonoBehaviour
         // Put it on the right layer
         job_go.GetComponent<SpriteRenderer>().sortingLayerName = "Jobs";
 
+        // FIXME
+        if (job.jobObjectType == "Door")
+        {
+            // By default door sprite is for N/S 
+            // Check to see if there's a wall E/W, in which case rotate 90 degrees
+            Tile eastTile = job.tile.world.GetTileAt(job.tile.X + 1, job.tile.Y);
+            Tile westTile = job.tile.world.GetTileAt(job.tile.X - 1, job.tile.Y);
+
+            if (eastTile != null && westTile != null && eastTile.furniture != null && westTile.furniture != null &&
+                eastTile.furniture.objectType == "Wall" && westTile.furniture.objectType == "Wall")
+            {
+                job_go.transform.rotation = Quaternion.Euler(0, 0, 90);
+                job_go.transform.Translate(1f, 0, 0, Space.World); // hack and fix
+            }
+        }
+
+
         job.RegisterJobCompleteCallback(OnJobEnded);
         job.RegisterJobCancelCallback(OnJobEnded);
 

@@ -60,9 +60,6 @@ public class Character : IXmlSerializable
             {
 
                 // Is the job reachable? 
-
-
-
                 destTile = myJob.tile;
                 myJob.RegisterJobCompleteCallback(OnJobEnded);
                 myJob.RegisterJobCancelCallback(OnJobEnded);
@@ -75,12 +72,7 @@ public class Character : IXmlSerializable
         if (myJob != null && currTile == destTile)
         {
             //if(pathAStar != null && pathAStar.Length() == 1) // We are now adjacent to the job site 
-            
-                
-            if (myJob != null)
-            {
-                myJob.DoWork(deltaTime);
-            }
+            myJob.DoWork(deltaTime);
         }
     }
 

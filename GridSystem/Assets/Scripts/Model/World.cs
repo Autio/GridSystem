@@ -95,8 +95,8 @@ public World(int width, int height) {
             new Furniture(
                 "Wall",
                 0,      // Impassable
-                1,
-                1,
+                1,      // Width
+                1,      // Height
                 true    // links to neighbour
             )
         );
@@ -113,7 +113,12 @@ public World(int width, int height) {
 
         // Scriptable object behaviours
         furniturePrototypes["Door"].furnitureParameters["openness"] = 0;
+        furniturePrototypes["Door"].furnitureParameters["is_opening"] = 0;
+
         furniturePrototypes["Door"].updateActions += FurnitureActions.Door_UpdateAction;
+
+        furniturePrototypes["Door"].IsEnterable = FurnitureActions.Door_IsEnterable;
+
     }
 
     Furniture CreateOneFurniturePrototype()
@@ -316,9 +321,12 @@ public World(int width, int height) {
         {
             for (int y = 0; y < Height; y++)
             {
-                writer.WriteStartElement("Tile");
-                tiles[x, y].WriteXml(writer);
-                writer.WriteEndElement();
+                if (tiles[x, y].Type != TileType.Empty)
+                {
+                    writer.WriteStartElement("Tile");
+                    tiles[x, y].WriteXml(writer);
+                    writer.WriteEndElement();
+                }
             }
         }
         writer.WriteEndElement();

@@ -11,6 +11,8 @@ public class Furniture
     public Dictionary<string, float> furnitureParameters;
     public Action<Furniture, float> updateActions;
 
+    public Func<Furniture, ENTERABILITY> IsEnterable;
+
     public void Update(float deltaTime)
     {
         if (updateActions != null)
@@ -65,6 +67,8 @@ public class Furniture
         {
             this.updateActions = (Action<Furniture, float>)other.updateActions.Clone();
         }
+
+        this.IsEnterable = other.IsEnterable;
     }
 
     virtual public Furniture Clone( )

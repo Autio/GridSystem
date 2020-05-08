@@ -136,12 +136,21 @@ public class Character : IXmlSerializable
         // Total distance from A to B
         float distToTravel = Mathf.Sqrt(Mathf.Pow(currTile.X - nextTile.X, 2) + Mathf.Pow(currTile.Y - nextTile.Y, 2));
 
-        if(nextTile.movementCost == 0)
+        if(nextTile.IsEnterable() == ENTERABILITY.Never)
         {
             Debug.LogError("FIXME: A character was trying to enter an unwalkable tile");
             nextTile = null; // Next tile is inaccessible
             pathAStar = null; // Our pathfinding information is stale
             return;
+        } else if (nextTile.IsEnterable() == ENTERABILITY.Soon)
+        {
+            // Can't enter now but should be able to in the future
+            // Likely to be a door
+            return;
+        }
+        {
+            // The tile we are trying to enter is walkable but 
+            // Are we allowed to enter it right now?
         }
 
         // How much can be traveled this Update

@@ -9,6 +9,8 @@ using System.Xml.Serialization;
 // Should there be a type? 
 public enum TileType { Empty, Floor, Space, Scaffolding, Metal, Wood };
 
+public enum ENTERABILITY { Yes, Never, Soon }; 
+
 public class Tile : IXmlSerializable { 
 
     TileType _type = TileType.Empty;
@@ -48,6 +50,8 @@ public class Tile : IXmlSerializable {
 
         }
     }
+
+
 
     public TileType Type {
 
@@ -194,5 +198,23 @@ public class Tile : IXmlSerializable {
     
         Type = (TileType)int.Parse(reader.GetAttribute("Type"));
 
+    }
+
+    public ENTERABILITY IsEnterable()
+    {
+        // True if you can enter this tile at this moment
+        if(movementCost == 0)
+        {
+            return ENTERABILITY.Never;
+        }
+
+        // Check our furniture if there's a block on enterability
+
+        if(furniture != null && furniture.IsEnterable != null)
+        {
+            return furniture.IsEnterable(furniture);
+        }
+
+        return ENTERABILITY.Yes;
     }
 }

@@ -35,6 +35,7 @@ public class Furniture
     // 2 means you walk at half speed. Movement modifiers add up. So Fire + table + rough tile = 3 + 3 + 2 = 8.
     // If movementCost = 0 then this tile is impassable. 
     public float movementCost { get; protected set; }
+    public bool roomEnclosure; // Is the room closed off from the rest of the map?
 
     int width;
     int height;
@@ -58,6 +59,7 @@ public class Furniture
     {
         this.objectType = other.objectType;
         this.movementCost = other.movementCost;
+        this.roomEnclosure = other.roomEnclosure;
         this.width = other.width;
         this.height = other.height;
         this.linksToNeighbour = other.linksToNeighbour;
@@ -77,11 +79,12 @@ public class Furniture
     }
 
     // Used by our object factory to create the prototypical object
-     public Furniture (string objectType, float movementCost = 1f, int width = 1, int height = 1, bool linksToNeighbour = false )
+    public Furniture(string objectType, float movementCost = 1f, int width = 1, int height = 1, bool linksToNeighbour = false, bool roomEnclosure = false )
     {
       
         this.objectType = objectType;
         this.movementCost = movementCost;
+        this.roomEnclosure = roomEnclosure;
         this.width = width;
         this.height = height;
         this.linksToNeighbour = linksToNeighbour;

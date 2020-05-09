@@ -18,6 +18,7 @@ public class Tile : IXmlSerializable {
     Action<Tile> cbTileChanged;
 
     UninstalledObject uninstalledObject;
+    public Room room;
 
     public Furniture furniture
     {

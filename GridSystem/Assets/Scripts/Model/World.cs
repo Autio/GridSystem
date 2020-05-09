@@ -10,7 +10,8 @@ public class World : IXmlSerializable
 {
     Tile[,] tiles;
     public List<Character> characters;
-    public List<Furniture> furnitures; 
+    public List<Furniture> furnitures;
+    public List<Room> rooms;
     
     // Pathfinding graph used to navigate world map
     public Path_TileGraph tileGraph { get; set; }
@@ -37,18 +38,38 @@ public World(int width, int height) {
 
     }
 
+    public Room GetOutsideRoom()
+    {
+        return rooms[0];
+    }
+
+    public void DeleteRoom(Room r)
+    {
+        if(r == GetOutsideRoom())
+        {
+            Debug.LogError("Trying to delete the outside room");
+            return;
+        }
+        r.UnassignAllTiles();
+        rooms.Remove(r);
+    }
+
     void SetupWorld(int width, int height) {
 		jobQueue = new JobQueue();
 
 		Width = width;
 		Height = height;
 
-		tiles = new Tile[Width,Height];
+        rooms = new List<Room>();
+        rooms.Add(new Room()); // Create the outside 
+
+        tiles = new Tile[Width,Height];
 
 		for (int x = 0; x < Width; x++) {
 			for (int y = 0; y < Height; y++) {
 				tiles[x,y] = new Tile(this, x, y);
 				tiles[x,y].RegisterTileTypeChangedCallback( OnTileChanged );
+                tiles[x, y].room = rooms[0]; // Rooms[0] is always going to be outside
 			}
 		}
 
@@ -97,7 +118,8 @@ public World(int width, int height) {
                 0,      // Impassable
                 1,      // Width
                 1,      // Height
-                true    // links to neighbour
+                true,   // links to neighbour
+                true    // Walls enclose rooms
             )
         );
 
@@ -107,7 +129,8 @@ public World(int width, int height) {
                 1,      // Open
                 1,
                 1,
-                false    // links to neighbour
+                false,  // links to neighbour
+                true    // Walls enclose rooms
             )
         );
 
@@ -185,11 +208,19 @@ public World(int width, int height) {
         }
 
         furnitures.Add(obj);
+        if(obj.roomEnclosure)
+        {
+            Room.DoRoomFloodFill(obj);
+        }
 
         if(cbFurnitureCreated != null)
         {
             cbFurnitureCreated(obj);
-            InvalidateTileGraph(); 
+            if (obj.movementCost != 1)
+            {
+                InvalidateTileGraph();
+
+            }
         }
 
         return obj;

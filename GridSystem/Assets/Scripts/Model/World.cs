@@ -43,6 +43,11 @@ public World(int width, int height) {
         return rooms[0];
     }
 
+    public void AddRoom(Room r)
+    {
+        rooms.Add(r);
+    }
+
     public void DeleteRoom(Room r, bool skipUnassignment)
     {
         if(r == GetOutsideRoom())

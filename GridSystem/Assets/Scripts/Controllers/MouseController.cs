@@ -20,6 +20,21 @@ public class MouseController : MonoBehaviour
         SimplePool.Preload(circleCursorPrefab, 100);
     }
 
+    public Vector3 GetMousePosition()
+    {
+        // Mouse position in world space
+        return currFramePosition;
+    }
+
+
+
+    public Tile GetMouseOverTile()
+    {
+        return WorldController.Instance.world.GetTileAt(
+            Mathf.FloorToInt(currFramePosition.x), 
+            Mathf.FloorToInt(currFramePosition.y));
+    }
+
     // Update is called once per frame
     void Update()
     {

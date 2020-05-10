@@ -43,14 +43,13 @@ public World(int width, int height) {
         return rooms[0];
     }
 
-    public void DeleteRoom(Room r)
+    public void DeleteRoom(Room r, bool skipUnassignment)
     {
         if(r == GetOutsideRoom())
         {
             Debug.LogError("Trying to delete the outside room");
             return;
         }
-        r.UnassignAllTiles();
         rooms.Remove(r);
     }
 

@@ -41,13 +41,60 @@ public class Room
 
         World world = sourceFurniture.tile.world;
 
-        if(sourceFurniture.tile.room != world.GetOutsideRoom())
+        Room oldRoom = sourceFurniture.tile.room;
+
+        // Try building a new room starting from the north  
+        FloodFill(sourceFurniture.tile.North(), oldRoom);
+        FloodFill(sourceFurniture.tile.East(),  oldRoom);
+        FloodFill(sourceFurniture.tile.South(), oldRoom);
+        FloodFill(sourceFurniture.tile.West(),  oldRoom);
+
+
+
+        // All tiles point to another room now
+        // Force old room tiles list to be blank
+        oldRoom.tiles = new List<Tile>(); 
+        if(oldRoom != world.GetOutsideRoom())
         {
-            world.DeleteRoom(sourceFurniture.tile.room);)
+            world.DeleteRoom(oldRoom, false);
         }
-        sourceFurniture.tile.room.UnassignAllTiles();
     }
 
+    protected static void FloodFill(Tile tile, Room oldRoom)
+    {
+        if(tile == null)
+        {
+            // Flood fill attempt off the map, so just return
+            return;
+        }
+
+        if(tile.room != oldRoom)
+        {
+            // Already assigned to another new room 
+            // so the direction is not isolated
+        }
+
+        if(tile.furniture != null && tile.furniture.roomEnclosure)
+        {
+            // Tile has a wall/door etc so can't be a room
+            return;
+        }
+
+        // We need to create a new room
+
+        Room newRoom = new Room();
+        Queue<Tile> tilesToCheck = new Queue<Tile>();
+        tilesToCheck.Enqueue(tile);
+
+        while(tilesToCheck.Count > 0)
+        {
+            Tile t = tilesToCheck.Dequeue();
+            if(t.room == oldRoom)
+            {
+                newRoom.AssignTile(t);
+            }
+        }
+    }
 
 }
  

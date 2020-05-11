@@ -8,8 +8,12 @@ using System.Xml.Serialization;
 
 public class Furniture
 {
-    public Dictionary<string, float> furnitureParameters;
-    public Action<Furniture, float> updateActions;
+    protected Dictionary<string, float> furnitureParameters;
+    /// <summary>
+    ///  Actions called every update. 
+    ///  Pass the furniture they belong to and the deltaTime
+    /// </summary>
+    protected Action<Furniture, float> updateActions;
 
     public Func<Furniture, ENTERABILITY> IsEnterable;
 
@@ -20,6 +24,8 @@ public class Furniture
             updateActions(this, deltaTime);
         }
     }
+
+
 
     // This represents the base tile of the boject but large objects may occupy multiple ties
     public Tile tile
@@ -89,7 +95,7 @@ public class Furniture
         this.height = height;
         this.linksToNeighbour = linksToNeighbour;
 
-        this.funcPositionValidation = this.__IsValidPosition; // override for special cases
+        this.funcPositionValidation = this.DEFAULT__IsValidPosition; // override for special cases
 
         this.furnitureParameters = new Dictionary<string, float>();
 
@@ -172,7 +178,8 @@ public class Furniture
         return funcPositionValidation(t);
     }
 
-    public bool __IsValidPosition(Tile t)
+    // TODO: Validation checks coming from furniture scripts
+    protected bool DEFAULT__IsValidPosition(Tile t)
     {
         // ensure the tile is Floor
         // Ensure there's no furniture
@@ -187,16 +194,6 @@ public class Furniture
             return false;
         }
 
-        return true;
-    }
-
-    public bool __IsValidPosition_Door(Tile t)
-    {
-        // Ensure there's a pair of N/S or E/W walls
-        if (IsValidPosition(t) == false)
-        {
-            return false;
-        }
         return true;
     }
 
@@ -240,5 +237,42 @@ public class Furniture
         }
     }
 
- 
+    public float GetParameter(string key, float default_value = 0)
+    {
+        if (furnitureParameters.ContainsKey(key) == false)
+        {
+            return default_value;
+        }
+        return furnitureParameters[key];
+    }
+
+    public void SetParameter(string key, float value)
+    {
+
+        furnitureParameters[key] = value;
+    }
+
+    public void ChangeParameter(string key, float value)
+    {
+        if (furnitureParameters.ContainsKey(key) == false)
+        {
+            furnitureParameters[key] = value;
+        } else
+        {
+            furnitureParameters[key] += value;
+
+        }
+    }
+    /// <summary>
+    /// Register a function that will be called every Update
+    /// </summary>
+    /// <param name="a"></param>
+    public void RegisterUpdateAction(Action<Furniture, float> a)
+    {
+        updateActions += a;
+    }
+    public void UnregisterUpdateAction(Action<Furniture, float> a)
+    {
+        updateActions -= a;
+    }
 }

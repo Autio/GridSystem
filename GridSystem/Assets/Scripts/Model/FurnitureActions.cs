@@ -5,20 +5,20 @@ public static class FurnitureActions
 {
     public static void Door_UpdateAction(Furniture f, float deltaTime)
     {
-        if (f.furnitureParameters["is_opening"] >= 1f)
+        if (f.GetParameter("is_opening") >= 1f)
         {
-            f.furnitureParameters["openness"] += deltaTime * 2f;
-            if(f.furnitureParameters["openness"] >= 1)
+            f.ChangeParameter("openness", deltaTime * 2f);
+            if(f.GetParameter("openness") >= 1)
             {
-                f.furnitureParameters["is_opening"] = 0;
+                f.SetParameter("is_opening", 0);
             }
         }
         else
         {
-            f.furnitureParameters["openness"] -= deltaTime * 1.3f;
+            f.ChangeParameter("openness", deltaTime * -1.3f);
         }
 
-        f.furnitureParameters["openness"] = Mathf.Clamp01(f.furnitureParameters["openness"]);
+        f.SetParameter("openness", Mathf.Clamp01(f.GetParameter("openness")));
 
         if (f.cbOnChanged != null)
         {
@@ -28,9 +28,9 @@ public static class FurnitureActions
 
     public static ENTERABILITY Door_IsEnterable(Furniture f)
     {
-        f.furnitureParameters["is_opening"] = 1;
+        f.SetParameter("is_opening", 1);
 
-        if(f.furnitureParameters["openness"] >= 1)
+        if(f.GetParameter("openness") >= 1)
         {
             return ENTERABILITY.Yes;
         } else

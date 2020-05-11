@@ -116,9 +116,9 @@ public class FurnitureSpriteController : MonoBehaviour
                 // Cycle through options of openness
                 for (int i = 1; i <= 8; i++)
                 {
-                    if (obj.furnitureParameters["openness"] <= 1f / (float)i)
+                    if (obj.GetParameter("openness") <= 1f / (float)i)
                     {
-                        Debug.Log("Door open stage: " + obj.furnitureParameters["openness"]);
+                        Debug.Log("Door open stage: " + obj.GetParameter("openness"));
                         spriteName = "Door_" + (i-1).ToString();
 
                     }

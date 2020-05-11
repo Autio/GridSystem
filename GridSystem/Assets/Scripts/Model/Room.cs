@@ -136,6 +136,9 @@ public class Room
             }
         }
 
+        // TODO: Other atmospheric properties of the room etc
+        newRoom.atmos02 = oldRoom.atmos02;
+
         // Tell the world that a new room has been formed
         tile.world.AddRoom(newRoom);
     }

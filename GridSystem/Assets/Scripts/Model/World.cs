@@ -139,10 +139,10 @@ public World(int width, int height) {
         );
 
         // Scriptable object behaviours
-        furniturePrototypes["Door"].furnitureParameters["openness"] = 0;
-        furniturePrototypes["Door"].furnitureParameters["is_opening"] = 0;
+        furniturePrototypes["Door"].SetParameter("openness",0);
+        furniturePrototypes["Door"].SetParameter("is_opening", 0);
 
-        furniturePrototypes["Door"].updateActions += FurnitureActions.Door_UpdateAction;
+        furniturePrototypes["Door"].RegisterUpdateAction(FurnitureActions.Door_UpdateAction);
 
         furniturePrototypes["Door"].IsEnterable = FurnitureActions.Door_IsEnterable;
 

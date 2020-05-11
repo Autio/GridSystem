@@ -12,7 +12,8 @@ public class World : IXmlSerializable
     public List<Character> characters;
     public List<Furniture> furnitures;
     public List<Room> rooms;
-    
+    public InventoryManager inventoryManager;
+
     // Pathfinding graph used to navigate world map
     public Path_TileGraph tileGraph { get; set; }
 
@@ -35,6 +36,15 @@ public World(int width, int height) {
 
         // Make one character
         Character c = CreateCharacter(GetTileAt(Width / 2, Height / 2));
+
+    }
+
+    /// <summary>
+    /// Default constructor used when loading a world from a file
+    /// </summary>
+
+    public World()
+    {
 
     }
 
@@ -83,6 +93,7 @@ public World(int width, int height) {
 
 		characters = new List<Character>();
         furnitures = new List<Furniture>();
+        inventoryManager = new InventoryManager();
 
 	}
 
@@ -335,10 +346,7 @@ public World(int width, int height) {
     ///
     ///////////////////////////////////////////////////////////////////////////
 
-    public World()
-    {
 
-    }
 
     public XmlSchema GetSchema()
     {
@@ -467,7 +475,10 @@ public World(int width, int height) {
         }
 
 
-        
+        // DEBUGGING ONLY
+        // TODO: Remove
+        // Create an inventory item
+        Inventory inv = new Inventory();
 
     }
 
@@ -491,6 +502,8 @@ public World(int width, int height) {
                 while (reader.ReadToNextSibling("Character"));
             }
     }
+
+
 
 
 }

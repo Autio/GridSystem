@@ -17,7 +17,10 @@ public class Tile : IXmlSerializable {
 
     Action<Tile> cbTileChanged;
 
-    UninstalledObject uninstalledObject;
+    // Inventory
+    Inventory inventory;
+
+
     public Room room;
 
     public Furniture furniture
@@ -106,6 +109,40 @@ public class Tile : IXmlSerializable {
 
         // Installing object
         furniture = objInstance;
+        return true;
+    }
+
+    public bool PlaceInventory(Inventory inv)
+    {
+        if (inv == null)
+        {
+            inventory = null;
+            return true;
+        }
+
+        if (inv != null)
+        {
+            if(inventory.objectType != inv.objectType)
+            {
+                Debug.LogError("Trying to assign inventory to a tile that already has some of a different type");
+                return false;
+            }
+            if(inventory.stackSize + inv.stackSize > inv.maxStackSize)
+            {
+                Debug.LogError("Trying to assign inventory to a tile that would exceed max stack");
+                return false;
+
+            }
+
+            inventory.stackSize += inv.stackSize;
+            inv.stackSize = 0;
+            return true;
+        }
+
+        // Current inventory is null
+        // The inventory manager needs to know that the old stack
+        // Is now empty and has to be removed from previous lsits
+        inventory = inv;
         return true;
     }
 

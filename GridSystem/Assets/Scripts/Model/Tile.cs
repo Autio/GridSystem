@@ -149,6 +149,7 @@ public class Tile : IXmlSerializable {
         // The inventory manager needs to know that the old stack
         // Is now empty and has to be removed from previous lsits
         inventory = inv.Clone();
+        inventory.tile = this;
         inv.stackSize = 0;
         return true;
     }

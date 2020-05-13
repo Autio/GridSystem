@@ -10,6 +10,9 @@ public class Inventory
     public int maxStackSize = 50;
     public int stackSize = 1;
 
+    public Tile tile;
+    public Character character;
+
     public Inventory()
     {
 

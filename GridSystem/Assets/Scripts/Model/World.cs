@@ -25,6 +25,8 @@ public class World : IXmlSerializable
     Action<Furniture> cbFurnitureCreated;
     Action<Tile> cbTileChanged;
     Action<Character> cbCharacterCreated;
+    Action<Inventory> cbInventoryCreated;
+
 
     // Queues are like arrays but you only put stuff at the end and take it from front
     // TODO: Replace with a dedicated class for managing job queues
@@ -259,12 +261,24 @@ public World(int width, int height) {
     {
         cbCharacterCreated += callbackfunc;
     }
-
-
+    
     public void UnregisterCharacterCreated(Action<Character> callbackfunc)
     {
         cbCharacterCreated -= callbackfunc;
     }
+
+
+    public void RegisterInventoryCreated(Action<Inventory> callbackfunc)
+    {
+        cbInventoryCreated += callbackfunc;
+    }
+
+
+    public void UnregisterInventoryCreated(Action<Inventory> callbackfunc)
+    {
+        cbInventoryCreated -= callbackfunc;
+    }
+
     public void RegisterTileChanged(Action<Tile> callbackfunc)
     {
         cbTileChanged += callbackfunc;
@@ -464,14 +478,14 @@ public World(int width, int height) {
         // reader.ReadToDescendant("Tile");
         if (reader.ReadToDescendant("Furniture"))
         {
-            do 
+            do
             {
                 int x = int.Parse(reader.GetAttribute("X"));
                 int y = int.Parse(reader.GetAttribute("Y"));
 
                 Furniture f = PlaceFurniture(reader.GetAttribute("objectType"), tiles[x, y]);
                 f.ReadXml(reader);
-            } 
+            }
             while (reader.ReadToNextSibling("Furniture"));
         }
 
@@ -480,8 +494,12 @@ public World(int width, int height) {
         // TODO: Remove
         // Create an inventory item
         Inventory inv = new Inventory();
-        inventoryManager.PlaceInventory(GetTileAt(Width / 2, Height / 2), inv);
-
+        Tile t = GetTileAt(Width / 2, Height / 2);
+        inventoryManager.PlaceInventory(t, inv);
+        if (cbInventoryCreated != null)
+        {
+            cbInventoryCreated(t.inventory);
+        }
     }
 
 

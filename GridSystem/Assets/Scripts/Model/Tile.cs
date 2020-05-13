@@ -18,7 +18,7 @@ public class Tile : IXmlSerializable {
     Action<Tile> cbTileChanged;
 
     // Inventory
-    Inventory inventory;
+    public Inventory inventory { get; protected set; }
 
 
     public Room room;
@@ -134,15 +134,22 @@ public class Tile : IXmlSerializable {
 
             }
 
-            inventory.stackSize += inv.stackSize;
-            inv.stackSize = 0;
+            int numToMove = inv.stackSize;
+            if(inventory.stackSize + numToMove > inventory.maxStackSize)
+            {
+                numToMove = inventory.maxStackSize - inventory.stackSize;
+            }
+
+            inventory.stackSize += numToMove;
+            inv.stackSize -= numToMove;
             return true;
         }
 
         // Current inventory is null
         // The inventory manager needs to know that the old stack
         // Is now empty and has to be removed from previous lsits
-        inventory = inv;
+        inventory = inv.Clone();
+        inv.stackSize = 0;
         return true;
     }
 

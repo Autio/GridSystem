@@ -116,7 +116,7 @@ public class Furniture
 
         if (tile.PlaceObject(obj) == false)
         {
-            // Unable to place tile
+            // Unable to place furniture on this tile
             return null;
         }
 

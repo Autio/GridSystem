@@ -210,7 +210,7 @@ public World(int width, int height) {
     {
         // FIXME: Assumes 1x1 tiles, change later
         if (furniturePrototypes.ContainsKey(objectType) == false)
-            {
+        {
             Debug.LogError("FurniturePrototypes doesn't contain a proto for the key: " + objectType);
 
         }
@@ -219,6 +219,7 @@ public World(int width, int height) {
         if(obj == null)
         {
             // Failed to place object. Probably something there already
+            // TODO: Handling deletion of existing furniture
             return null;
         }
 
@@ -479,6 +480,7 @@ public World(int width, int height) {
         // TODO: Remove
         // Create an inventory item
         Inventory inv = new Inventory();
+        inventoryManager.PlaceInventory(GetTileAt(Width / 2, Height / 2), inv);
 
     }
 

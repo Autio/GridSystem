@@ -8,6 +8,7 @@ public class BuildModeController : MonoBehaviour
 {
 
     bool buildModeIsObjects = false;
+    bool removingObjects = false;
     TileType buildModeTile = TileType.Floor;
     string buildModeObjectType;
 
@@ -34,8 +35,17 @@ public class BuildModeController : MonoBehaviour
     {
 
         buildModeIsObjects = true;
+        removingObjects = false;
         buildModeObjectType = objectType;
 
+
+    }
+    public void SetMode_RemoveFurniture()
+    {
+
+        buildModeIsObjects = true;
+        buildModeObjectType = null;
+        removingObjects = true;
 
     }
 

@@ -1,10 +1,12 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using TMPro;
 
 
 public class InventorySpriteController : MonoBehaviour
 {
+    public GameObject inventoryUIPrefab;
 
     Dictionary<Inventory, GameObject> inventoryGameObjectMap;
     Dictionary<string, Sprite> inventorySprites;
@@ -68,6 +70,16 @@ public class InventorySpriteController : MonoBehaviour
         sr.sprite = inventorySprites[inventory.objectType];
         // Put it on the right layer
         sr.sortingLayerName = "Inventory";
+
+        if(inventory.maxStackSize > 1)
+        {
+            // Stackable object, show UI element to indicate number of items
+            GameObject ui_go = Instantiate(inventoryUIPrefab);
+            ui_go.transform.SetParent(inventory_go.transform);
+            ui_go.transform.localPosition = new Vector3( 0.5f, 0.5f, 0);
+            GameObject textObject = ui_go.transform.Find("InventoryTextMesh").gameObject;
+            textObject.GetComponent<TMP_Text>().text = inventory.stackSize.ToString();
+        }
 
         // FIXME: Add on changed callback
         //inventory.RegisterOnChangedCallback(OnCharacterChanged);

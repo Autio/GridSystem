@@ -464,8 +464,17 @@ public World(int width, int height) {
         }
 
         inv = new Inventory();
-        inv.stackSize = 17;
+        inv.stackSize = 18;
         t = GetTileAt(Width / 2 + 2, Height / 2);
+        inventoryManager.PlaceInventory(t, inv);
+        if (cbInventoryCreated != null)
+        {
+            cbInventoryCreated(t.inventory);
+        }
+
+        inv = new Inventory();
+        inv.stackSize = 45;
+        t = GetTileAt(Width / 2 + 1, Height / 2 + 2);
         inventoryManager.PlaceInventory(t, inv);
         if (cbInventoryCreated != null)
         {

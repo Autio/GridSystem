@@ -423,7 +423,6 @@ public World(int width, int height) {
         Width = int.Parse(reader.GetAttribute("Width"));
         Height = int.Parse(reader.GetAttribute("Height"));
 
-        reader.MoveToElement();
 
         SetupWorld(Width, Height);
 
@@ -451,7 +450,27 @@ public World(int width, int height) {
             }
         }
 
-       
+
+        // DEBUGGING ONLY
+        // TODO: Remove
+        // Create an inventory item
+        Inventory inv = new Inventory();
+        inv.stackSize = 10;
+        Tile t = GetTileAt(Width / 2, Height / 2);
+        inventoryManager.PlaceInventory(t, inv);
+        if (cbInventoryCreated != null)
+        {
+            cbInventoryCreated(t.inventory);
+        }
+
+        inv = new Inventory();
+        inv.stackSize = 17;
+        t = GetTileAt(Width / 2 + 2, Height / 2);
+        inventoryManager.PlaceInventory(t, inv);
+        if (cbInventoryCreated != null)
+        {
+            cbInventoryCreated(t.inventory);
+        }
     }
 
     void ReadXml_Tiles(XmlReader reader)
@@ -490,16 +509,6 @@ public World(int width, int height) {
         }
 
 
-        // DEBUGGING ONLY
-        // TODO: Remove
-        // Create an inventory item
-        Inventory inv = new Inventory();
-        Tile t = GetTileAt(Width / 2, Height / 2);
-        inventoryManager.PlaceInventory(t, inv);
-        if (cbInventoryCreated != null)
-        {
-            cbInventoryCreated(t.inventory);
-        }
     }
 
 

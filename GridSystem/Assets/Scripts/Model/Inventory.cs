@@ -6,7 +6,7 @@ using UnityEngine;
 
 public class Inventory
 {
-    public string objectType = "Steel Plate";
+    public string objectType = "SteelPlate";
     public int maxStackSize = 50;
     public int stackSize = 1;
 

@@ -122,27 +122,25 @@ public class Tile : IXmlSerializable {
 
         if (inv != null)
         {
-            if(inventory.objectType != inv.objectType)
+            if (inventory != null)
             {
-                Debug.LogError("Trying to assign inventory to a tile that already has some of a different type");
-                return false;
-            }
-            if(inventory.stackSize + inv.stackSize > inv.maxStackSize)
-            {
-                Debug.LogError("Trying to assign inventory to a tile that would exceed max stack");
-                return false;
+                if (inventory.objectType != inv.objectType)
+                {
+                    Debug.LogError("Trying to assign inventory to a tile that already has some of a different type");
+                    return false;
+                }
 
-            }
+                int numToMove = inv.stackSize;
+                if (inventory.stackSize + numToMove > inventory.maxStackSize)
+                {
+                    numToMove = inventory.maxStackSize - inventory.stackSize;
+                }
 
-            int numToMove = inv.stackSize;
-            if(inventory.stackSize + numToMove > inventory.maxStackSize)
-            {
-                numToMove = inventory.maxStackSize - inventory.stackSize;
-            }
+                inventory.stackSize += numToMove;
+                inv.stackSize -= numToMove;
 
-            inventory.stackSize += numToMove;
-            inv.stackSize -= numToMove;
-            return true;
+                return true;
+            }
         }
 
         // Current inventory is null
@@ -151,6 +149,7 @@ public class Tile : IXmlSerializable {
         inventory = inv.Clone();
         inventory.tile = this;
         inv.stackSize = 0;
+
         return true;
     }
 

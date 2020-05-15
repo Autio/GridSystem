@@ -64,9 +64,10 @@ public class InventorySpriteController : MonoBehaviour
 
 
         // Add a sprite renderer
-        inventory_go.AddComponent<SpriteRenderer>().sprite = inventorySprites[inventory.objectType];
+        SpriteRenderer sr = inventory_go.AddComponent<SpriteRenderer>();
+        sr.sprite = inventorySprites[inventory.objectType];
         // Put it on the right layer
-        inventory_go.GetComponent<SpriteRenderer>().sortingLayerName = "Inventory";
+        sr.sortingLayerName = "Inventory";
 
         // FIXME: Add on changed callback
         //inventory.RegisterOnChangedCallback(OnCharacterChanged);
@@ -79,7 +80,8 @@ public class InventorySpriteController : MonoBehaviour
         {
             Debug.LogError("OnInventoryChanged. Trying to change visuals for a character not in our dictionary");
         }
-            GameObject inventory_go = inventoryGameObjectMap[inventory];
+
+        GameObject inventory_go = inventoryGameObjectMap[inventory];
         inventory_go.transform.position = new Vector3(inventory.tile.X, inventory.tile.Y, 0);
              
         

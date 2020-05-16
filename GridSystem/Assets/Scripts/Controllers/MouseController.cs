@@ -30,9 +30,7 @@ public class MouseController : MonoBehaviour
 
     public Tile GetMouseOverTile()
     {
-        return WorldController.Instance.world.GetTileAt(
-            Mathf.FloorToInt(currFramePosition.x), 
-            Mathf.FloorToInt(currFramePosition.y));
+        return WorldController.Instance.GetTileAtWorldCoord(currFramePosition);
     }
 
     // Update is called once per frame
@@ -58,8 +56,8 @@ public class MouseController : MonoBehaviour
             dragStartPosition = currFramePosition;
         }
 
-        int start_x = Mathf.FloorToInt(dragStartPosition.x);
-        int end_x = Mathf.FloorToInt(currFramePosition.x);
+        int start_x = Mathf.FloorToInt(dragStartPosition.x + 0.5f);
+        int end_x = Mathf.FloorToInt(currFramePosition.x + 0.5f);
         if (end_x < start_x)
         {
             int temp = end_x;
@@ -67,8 +65,8 @@ public class MouseController : MonoBehaviour
             start_x = temp;
         }
 
-        int start_y = Mathf.FloorToInt(dragStartPosition.y);
-        int end_y = Mathf.FloorToInt(currFramePosition.y);
+        int start_y = Mathf.FloorToInt(dragStartPosition.y + 0.5f);
+        int end_y = Mathf.FloorToInt(currFramePosition.y + 0.5f);
         if (end_y < start_y)
         {
             int temp = end_y;

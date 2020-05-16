@@ -76,7 +76,7 @@ public class InventorySpriteController : MonoBehaviour
             // Stackable object, show UI element to indicate number of items
             GameObject ui_go = Instantiate(inventoryUIPrefab);
             ui_go.transform.SetParent(inventory_go.transform);
-            ui_go.transform.localPosition = new Vector3( 0.5f, 0.5f, 0);
+            ui_go.transform.localPosition = Vector3.zero;
             GameObject textObject = ui_go.transform.Find("InventoryTextMesh").gameObject;
             textObject.GetComponent<TMP_Text>().text = inventory.stackSize.ToString();
         }

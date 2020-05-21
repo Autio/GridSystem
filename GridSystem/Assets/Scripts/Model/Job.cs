@@ -9,7 +9,7 @@ public class Job
     // placing furniture, moving stored inventory, working at a location
 
     // What tile is the job for?
-    public Tile tile { get; protected set; }
+    public Tile tile;
     float jobTime; // Time until job is complete
 
     // Graphics 

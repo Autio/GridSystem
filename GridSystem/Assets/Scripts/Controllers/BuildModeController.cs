@@ -66,7 +66,10 @@ public class BuildModeController : MonoBehaviour
 
                 if (WorldController.Instance.world.furnitureJobPrototypes.ContainsKey(furnitureType))
                 {
+                    // Make a clone of the job prototype
                     j = WorldController.Instance.world.furnitureJobPrototypes[furnitureType].Clone();
+                    // Assign the correct tile
+                    j.tile = t;
                 }
                 else
                 {

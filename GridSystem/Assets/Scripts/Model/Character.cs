@@ -69,8 +69,9 @@ public class Character : IXmlSerializable
 
 
         // If already at destination
-        if (myJob != null && currTile == destTile)
-        {
+        if (myJob != null && currTile == myJob.tile)
+        {   
+            // Correct tile for the job
             //if(pathAStar != null && pathAStar.Length() == 1) // We are now adjacent to the job site 
             myJob.DoWork(deltaTime);
         }

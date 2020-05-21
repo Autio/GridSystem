@@ -34,8 +34,8 @@ public class JobSpriteController : MonoBehaviour
 
         // Add tile/GO pair to the dictionary
         jobGameObjectMap.Add(job, job_go);
-
         job_go.name = "JOB_" + job.jobObjectType + " " + job.tile.X + "_ " + job.tile.Y;
+
         job_go.transform.position = new Vector3(job.tile.X, job.tile.Y, 0);
         job_go.transform.SetParent(this.transform, true);
 
@@ -82,9 +82,5 @@ public class JobSpriteController : MonoBehaviour
 
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
+
 }

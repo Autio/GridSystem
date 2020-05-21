@@ -10,6 +10,7 @@ public class BuildModeController : MonoBehaviour
     bool buildModeIsObjects = false;
     bool removingObjects = false;
     TileType buildModeTile = TileType.Floor;
+
     string buildModeObjectType;
 
     List<GameObject> dragPreviewGameObjects;
@@ -61,12 +62,17 @@ public class BuildModeController : MonoBehaviour
             if (WorldController.Instance.world.IsFurniturePlacementValid(furnitureType, t) &&
             t.pendingFurnitureJob == null)
             {
-                Job j = new Job(t, furnitureType, (theJob) => {
-                    WorldController.Instance.world.PlaceFurniture(furnitureType, t);
-                    t.pendingFurnitureJob = null;
-                }
-                ); 
+                Job j;
 
+                if (WorldController.Instance.world.furnitureJobPrototypes.ContainsKey(furnitureType))
+                {
+                    j = WorldController.Instance.world.furnitureJobPrototypes[furnitureType].Clone();
+                }
+                else
+                {
+                    Debug.LogError("There is no furniture job prototype for '" + furnitureType + "'");
+                    j = new Job(t, furnitureType, FurnitureActions.JobComplete_FurnitureBuilding, .1f, null);
+                }
                 // FIXME: Set flags better. Too easy to forget to clear them and set them
                 t.pendingFurnitureJob = j;
 
@@ -83,4 +89,6 @@ public class BuildModeController : MonoBehaviour
             t.Type = buildModeTile;
         }
     }
+
+
 }

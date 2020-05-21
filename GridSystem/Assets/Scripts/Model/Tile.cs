@@ -19,8 +19,7 @@ public class Tile : IXmlSerializable {
 
     // Inventory
     public Inventory inventory { get; protected set; }
-
-
+    
     public Room room;
 
     public Furniture furniture

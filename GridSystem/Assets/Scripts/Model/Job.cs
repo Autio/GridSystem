@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Job 
+public class Job
 {
     // Holds information for a queued up job, including
     // placing furniture, moving stored inventory, working at a location
@@ -19,7 +19,7 @@ public class Job
     Action<Job> cbJobComplete;
     Action<Job> cbJobCancel;
 
-    Dictionary<string, Inventory> inventoryRequirements;
+    public Dictionary<string, Inventory> inventoryRequirements;
 
     public Job(Tile tile, string jobObjectType, Action<Job> cbJobComplete, float jobTime, Inventory[] inventoryRequirements)
     {
@@ -34,10 +34,11 @@ public class Job
             foreach (Inventory inv in inventoryRequirements)
             {
                 this.inventoryRequirements[inv.objectType] = inv.Clone();
+
             }
 
         }
-        
+
 
     }
 
@@ -97,10 +98,38 @@ public class Job
 
     public void CancelJob()
     {
-        if(cbJobCancel != null)
+        if (cbJobCancel != null)
         {
             cbJobCancel(this);
         }
     }
+
+    public bool HasAllMaterial()
+    {
+        foreach(Inventory inv in inventoryRequirements.Values)
+        {
+            if (inv.maxStackSize > inv.stackSize)
+                return false;
+        }
+        return true;
+    }
+
+    public bool DesiresInventoryType(Inventory inv)
+    {
+        if(inventoryRequirements.ContainsKey(inv.objectType) == false)
+        {
+            return false;
+        }
+
+        if (inventoryRequirements[inv.objectType].stackSize >= inventoryRequirements[inv.objectType].maxStackSize)
+        {
+            // Have everything we need
+            return false;
+        }
+
+        // Inventory is the type we want and we still need it
+        return true;
+    }
 }
+
 

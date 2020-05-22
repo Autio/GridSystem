@@ -42,4 +42,35 @@ public class InventoryManager
 
         return true;
     }
+
+    public bool PlaceInventory(Job job, Inventory inv)
+    {
+
+        if (job.inventoryRequirements.ContainsKey(inv.objectType) == false)
+        {
+            Debug.LogError("Attempting to add inventory to a job that it does not want");
+        }
+        job.inventoryRequirements[inv.objectType].stackSize += inv.stackSize;
+
+        if(job.inventoryRequirements[inv.objectType].maxStackSize > job.inventoryRequirements[inv.objectType].stackSize)
+        {
+            inv.stackSize = job.inventoryRequirements[inv.objectType].stackSize = job.inventoryRequirements[inv.objectType].maxStackSize;
+            job.inventoryRequirements[inv.objectType].stackSize = job.inventoryRequirements[inv.objectType].maxStackSize;
+        }
+        else
+        {
+            inv.stackSize = 0;
+        }
+        
+        // Inv might be an empty stack if it was merged to another stack
+        if (inv.stackSize == 0)
+        {
+            if (inventories.ContainsKey(inv.objectType))
+            {
+                inventories[inv.objectType].Remove(inv);
+            }
+        }
+
+        return true;
+    }
 }

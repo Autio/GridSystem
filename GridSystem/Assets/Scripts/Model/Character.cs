@@ -48,25 +48,42 @@ public class Character : IXmlSerializable
         currTile = destTile = nextTile = tile;
     }
 
+    void GetNewJob()
+    {
+        // Get a new job
+        myJob = currTile.world.jobQueue.Dequeue();
+
+        // Check to see that the final location can be reached
+        destTile = myJob.tile;
+        myJob.RegisterJobCompleteCallback(OnJobEnded);
+        myJob.RegisterJobCancelCallback(OnJobEnded);
+
+        pathAStar = new Path_AStar(currTile.world, currTile, destTile);
+        if (pathAStar.Length() == 0)
+        {
+            Debug.LogError("Path_AStar returned no path to the target job tile");
+            AbandonJob();
+            pathAStar = null;
+            destTile = currTile;
+        }
+    }
+
     void Update_DoJob(float deltaTime)
     {
         // Do I have a job? 
         if (myJob == null)
         {
-            // Get a new job
-            myJob = currTile.world.jobQueue.Dequeue();
+            GetNewJob();
 
-            if (myJob != null)
+            if (myJob == null)
             {
-
-                // Is the job reachable? 
-                destTile = myJob.tile;
-                myJob.RegisterJobCompleteCallback(OnJobEnded);
-                myJob.RegisterJobCancelCallback(OnJobEnded);
+                // No job in the queue, so just return
+                destTile = currTile;
+                return;
             }
-
         }
 
+        // Does the job have all the materials it needs?
 
         // If already at destination
         if (myJob != null && currTile == destTile)
@@ -125,7 +142,7 @@ public class Character : IXmlSerializable
         }
 
 
-        // Total distance from A to B
+        // Total diastance from A to B
         float distToTravel = Mathf.Sqrt(Mathf.Pow(currTile.X - nextTile.X, 2) + Mathf.Pow(currTile.Y - nextTile.Y, 2));
 
         if(nextTile.IsEnterable() == ENTERABILITY.Never)
